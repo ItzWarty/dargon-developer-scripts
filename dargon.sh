@@ -8,6 +8,9 @@ RUBY_DIR_WIN="c:/Ruby21"
 RUBY_DIR="/c/Ruby21"
 BOOT2DOCKER_VERSION="v1.1.2";
 
+COLOR_LIME='\e[1;32m';
+COLOR_NONE='\e[0m';
+
 if [ ! -e $DARGON_UTILITIES_TEMP_DIR ]
 then
    mkdir $DARGON_UTILITIES_TEMP_DIR;
@@ -106,6 +109,32 @@ function dargonSetupEnvironment_pullAndForkRepositories() {
       hub clone "$DARGON_GITHUB_ORGANIZATION_NAME/$i";
       pushd "$DARGON_REPOSITORIES_DIR/$i" > /dev/null;
       hub fork
+      popd > /dev/null;      
+   done
+   popd > /dev/null
+}
+
+function dargonPull() {
+   pushd $DARGON_REPOSITORIES_DIR > /dev/null;
+   echo "Pulling latest Dargon source code..."
+   for i in "${DARGON_REPOSITORY_NAMES[@]}"
+   do
+      pushd "$DARGON_REPOSITORIES_DIR/$i" > /dev/null;
+      echo -n -e "$COLOR_LIME$i: $COLOR_NONE";
+      git pull;
+      popd > /dev/null;      
+   done
+   popd > /dev/null
+}
+
+function dargonStatus() {
+   pushd $DARGON_REPOSITORIES_DIR > /dev/null;
+   echo "Getting Dargon local repository statuses..."
+   for i in "${DARGON_REPOSITORY_NAMES[@]}"
+   do
+      pushd "$DARGON_REPOSITORIES_DIR/$i" > /dev/null;
+      echo -n -e "$COLOR_LIME$i: $COLOR_NONE";
+      git status;
       popd > /dev/null;      
    done
    popd > /dev/null
