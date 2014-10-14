@@ -140,6 +140,19 @@ function dargonStatus() {
    popd > /dev/null
 }
 
+function dargonFsck() {
+   pushd $DARGON_REPOSITORIES_DIR > /dev/null;
+   echo "Running Git Filesystem Consistency Check on local repositories..."
+   for i in "${DARGON_REPOSITORY_NAMES[@]}"
+   do
+      pushd "$DARGON_REPOSITORIES_DIR/$i" > /dev/null;
+      echo -e "$COLOR_LIME$i: $COLOR_NONE";
+      git fsck;
+      popd > /dev/null;      
+   done
+   popd > /dev/null
+}
+
 function dargonNukeVirtualMachines() {
    __updateDockerEverything;
    if [ ! $is_docker_installed ] 
