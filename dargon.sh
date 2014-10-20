@@ -86,6 +86,7 @@ function dargonSetupEnvironment_installHub() {
       git clone git://github.com/github/hub.git;
    fi
    cd hub;
+   git reset --hard 12445c14fea2e38eaba28edf5527c9b674692dd0;
    rake install;
    popd > /dev/null;
    echo "Done installing Hub!";
