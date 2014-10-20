@@ -123,7 +123,31 @@ function dargonSetupEnvironment_pullAndForkRepositories() {
    echo "Pulling and forking Dargon source code..."
    for i in "${DARGON_REPOSITORY_NAMES[@]}"
    do
-      hub clone "$DARGON_GITHUB_ORGANIZATION_NAME/$i";
+      echo -n -e "$COLOR_LIME$i: $COLOR_NONE";
+      local repositoryPath="$DARGON_REPOSITORIES_DIR/$i";
+      if [[ ! -d $repositoryPath ]]
+      then
+         mkdir $repositoryPath > /dev/null;
+         pushd $repositoryPath > /dev/null;
+         hub clone "$DARGON_GITHUB_ORGANIZATION_NAME/$i" .;
+         hub fork;
+         popd > /dev/null;
+      fi
+      pushd $repositoryPath > /dev/null;
+      local branch="$(git symbolic-ref HEAD 2>/dev/null)" || "";     # detached HEAD
+      if [[ ! -z "$branch" ]]
+      then
+         branch=${branch##refs/heads/};
+         #git branch -u is git 1.8+, else fall back to old argument.
+         git branch -u "origin/$branch" > /dev/null || git branch --set-upstream $branch "origin/$branch" > /dev/null;
+         echo "Upstream set to origin/$branch";
+      else 
+         echo "Not on a branch?";
+      fi
+      popd > /dev/null;
+   done
+   popd > /dev/null
+}
       pushd "$DARGON_REPOSITORIES_DIR/$i" > /dev/null;
       hub fork
       popd > /dev/null;      
