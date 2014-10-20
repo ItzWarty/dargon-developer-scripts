@@ -56,6 +56,7 @@ function dargonSetupEnvironment() {
       echo "DOCKER IS ALREADY INSTALLED";
    fi
    dargonSetupEnvironment_pullAndForkRepositories;
+   dargonNugetPackageRestore;
    dargonStartWyvern;
    echo "TODO";
 }
@@ -149,8 +150,17 @@ function dargonSetupEnvironment_pullAndForkRepositories() {
    done
    popd > /dev/null
 }
+
+function dargonNugetPackageRestore() {
+   __updateNugetEverything;
+
+   pushd $DARGON_REPOSITORIES_DIR > /dev/null;
+   echo "Restoring Nuget Packages..."
+   for i in "${DARGON_REPOSITORY_NAMES[@]}"
+   do
       pushd "$DARGON_REPOSITORIES_DIR/$i" > /dev/null;
-      hub fork
+      echo -n -e "$COLOR_LIME$i: $COLOR_NONE";
+      eval "nuget restore";
       popd > /dev/null;      
    done
    popd > /dev/null
@@ -303,4 +313,13 @@ function __updateDockerGlobals() {
    fi
 }
 
-__updateDockerEverything
+function __updateNugetEverything() {
+   local path="$DARGON_UTILITIES_TEMP_DIR/nuget.exe";
+   if [ -e "$path" ]
+   then
+      alias nuget="'$path'";
+   fi
+}
+
+__updateDockerEverything;
+__updateNugetEverything;
