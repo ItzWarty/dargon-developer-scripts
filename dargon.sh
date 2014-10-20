@@ -5,7 +5,7 @@ WYVERN_DOCKER_SSH_PORT=2122;
 WYVERN_DOCKER_ARGS="--vm='wyvern-vm' --sshport=$WYVERN_DOCKER_SSH_PORT";
 DARGON_RUBY_VERSION="2.1.3";
 DARGON_UTILITIES_TEMP_DIR="$DARGON_UTILITIES_DIR/temp";
-declare -a DARGON_REPOSITORY_NAMES=( "libdtp" "libtestutil" "libdpo" "vssettings" "the-dargon-project" "librads" "libwarty" "libimdg" "libdipc" "libvfm");
+declare -a DARGON_REPOSITORY_NAMES=( "libdtp" "libtestutil" "libdpo" "vssettings" "the-dargon-project" "librads" "libwarty" "libimdg" "libdipc" "libvfm" "dargon-utilities");
 DARGON_GITHUB_ORGANIZATION_NAME="the-dargon-project";
 RUBY_DIR_WIN="c:/Ruby21"
 RUBY_DIR="/c/Ruby21"
