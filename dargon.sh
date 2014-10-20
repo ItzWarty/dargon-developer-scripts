@@ -44,6 +44,9 @@ function dargonSetupEnvironment() {
    command -v hub >/dev/null 2>&1 || {
       dargonSetupEnvironment_installHub;
    };
+   command -v nuget >/dev/null 2>&1 || {
+      dargonSetupEnvironment_installNuget;
+   };
    
    __updateDockerEverything;
    if [ ! $is_docker_installed ]
@@ -86,6 +89,17 @@ function dargonSetupEnvironment_installHub() {
    rake install;
    popd > /dev/null;
    echo "Done installing Hub!";
+}
+
+function dargonSetupEnvironment_installNuget() {
+   echo "Installing Nuget!";
+   pushd $DARGON_REPOSITORIES_DIR > /dev/null;
+   local nuget_executable_name="nuget.exe"
+   local nuget_executable_path="$DARGON_UTILITIES_TEMP_DIR/$nuget_executable_name";
+   curl -L -o $nuget_executable_path -O "http://nuget.org/nuget.exe";
+   popd > /dev/null;
+   
+   __updateNugetEverything;
 }
 
 function dargonSetupEnvironment_installBoot2Docker() {
