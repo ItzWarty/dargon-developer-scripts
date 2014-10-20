@@ -1,3 +1,6 @@
+if [[ -z "$DARGON_UTILITIES_DIR" ]]; then echo "Warning: \$DARGON_UTILITIES_DIR ISN'T SET!"; fi
+if [[ -z "$DARGON_REPOSITORIES_DIR" ]]; then echo "Warning: \$DARGON_REPOSITORIES_DIR ISN'T SET!"; fi
+
 WYVERN_DOCKER_SSH_PORT=2122;
 WYVERN_DOCKER_ARGS="--vm='wyvern-vm' --sshport=$WYVERN_DOCKER_SSH_PORT";
 DARGON_RUBY_VERSION="2.1.3";
