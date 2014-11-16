@@ -24,6 +24,7 @@ function buildSolution() {
 # Required Variables:
 #   $ProjectPage - probably the link to the project repository.
 #   $ProjectLicense - link to project license.
+#   $PackageProfile - see NuGet Target column of http://embed.plnkr.co/03ck2dCtnJogBKHJ9EjY/preview
 function releasePackage() {
    echo "hello! ${Major}.${Minor}.${Patch}-${Stage}";
    echo "${WORKSPACE}/.nuget/NuGet.exe";
@@ -65,10 +66,10 @@ function releasePackage() {
    sed -i -e "s|http://LICENSE_URL_.*_LINE|${ProjectLicense}|" "${ProjectName}.nuspec" > /dev/null;
    
    # Add Release to lib/net45 of output
-   sed -i '/\/metadata/a \
+   sed -i "/\/metadata/a \
      <files> \
-       <file src="bin/Release/**/*.*" target="lib\\net45\\" /> \
-     <\/files>' "${ProjectName}.nuspec" > /dev/null;
+       <file src=\"bin/Release/**/*.*\" target=\"lib/${PackageProfile}\\\" /> \
+     <\/files>" "${ProjectName}.nuspec" > /dev/null;
    
    # Turn Shell Script Tracing On
    set -x;
