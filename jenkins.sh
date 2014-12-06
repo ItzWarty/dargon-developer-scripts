@@ -1,3 +1,6 @@
+# Expected Files:
+#   ~/.nuget/NuGet.exe
+#
 # Expected Jenkins Variables:
 #   $WORKSPACE - defined by Jenkins
 #
@@ -17,6 +20,7 @@
 # Required Variables: (none)
 function buildSolution() {
    pushd "${WORKSPACE}";
+   mono ~/.nuget/NuGet.exe restore "${SolutionName}.sln";
    xbuild /p:Configuration=Release "${SolutionName}.sln";
    popd;
 }
@@ -40,7 +44,7 @@ function releasePackage() {
    ASSEMBLY_DESCRIPTION="$(echo \"$ASSEMBLY_INFO\" | grep AssemblyDescription | sed -n -e 's/.*AssemblyDescription\w*(\w*"//p' | sed -n -e 's/")].*//p')";
    ASSEMBLY_COPYRIGHT="$(echo \"$ASSEMBLY_INFO\" | grep AssemblyCopyright | sed -n -e 's/.*AssemblyCopyright\w*(\w*"//p' | sed -n -e 's/")].*//p')";
    
-   mono ".nuget/NuGet.exe" spec "${ProjectName}.csproj" -f;
+   mono ~/.nuget/NuGet.exe spec "${ProjectName}.csproj" -f;
    
    sed -i -e "s/[$]id[$]/${ProjectName}/" "${ProjectName}.nuspec" > /dev/null;
    if [[ -z "${Stage}" ]]; then
@@ -76,7 +80,7 @@ function releasePackage() {
    
    # remove all nuget packages, pack new nuget package
    rm -f *.nupkg;
-   mono ".nuget/NuGet.exe" pack "${ProjectName}.nuspec" -Verbose -Prop Configuration=Release;
+   mono ~/.nuget/NuGet.exe pack "${ProjectName}.nuspec" -Verbose -Prop Configuration=Release;
    
    # copy nuget packages to nuget repository.
    yes n | mv -i ./*.nupkg /var/NugetRepository
