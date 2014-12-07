@@ -82,8 +82,8 @@ function releasePackage() {
    rm -f *.nupkg;
    mono ~/.nuget/NuGet.exe pack "${ProjectName}.nuspec" -Verbose -Prop Configuration=Release;
    
-   # copy nuget packages to nuget repository.
-   yes n | mv -i ./*.nupkg /var/NugetRepository
+   # push to NuGet repository
+   mono ~/.nuget/NuGet.exe push "${ProjectName}.${PACKAGE_VERSION}.nupkg" -Source http://nuget.dargon.io/
    
    popd;
 }
