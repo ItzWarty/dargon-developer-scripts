@@ -104,6 +104,19 @@ function dargonSetupEnvironment_installNuget() {
    __updateNugetEverything;
 }
 
+function dargonSetupEnvironment_installDargonManagementInterface() {
+   echo "Installing Dargon Management Interface (dmi)!";
+   pushd $DARGON_REPOSITORIES_DIR > /dev/null;
+   local dmi_executable_name="dmi.exe"
+   local dmi_executable_path="$DARGON_UTILITIES_TEMP_DIR/$dmi_executable_name";
+   local dmi_url=`curl -s https://api.github.com/repos/the-dargon-project/dargon.management-interface/releases | grep browser_download_url | head -n 1 | cut -d '"' -f 4`;
+   echo "DMI Url: $dmi_url";
+   curl -L -o $dmi_executable_path -O "$dmi_url";
+   popd > /dev/null;
+   
+   __updateDargonManagementInterfaceEverything;
+}
+
 function dargonSetupEnvironment_installBoot2Docker() {
    echo "Installing Boot2Docker!";
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
@@ -321,5 +334,18 @@ function __updateNugetEverything() {
    fi
 }
 
+# DMI ILMerge Command: "C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe" "C:\my-repositories\dargon.management-interface\bin\Release\dargon.management-interface.exe" "C:\my-repositories\dargon.management-interface\bin\Release\*.dll" /targetplatform:v4 /out:C:/my-repositories/dargon.management-interface\bin\Release/dmi.exe /wildcards
+function __updateDargonManagementInterfaceEverything() {
+   local path="$DARGON_UTILITIES_TEMP_DIR/dmi.exe";
+   if [ -e "$path" ]
+   then
+      function dmi { "$DARGON_UTILITIES_TEMP_DIR/dmi.exe" "$1" > /dev/null; }
+      export -f dmi;
+      alias dmiDaemon="dmi localhost:21000 &";
+      alias dmiPlatform="dmi localhost:31000 &";
+   fi
+}
+
 __updateDockerEverything;
 __updateNugetEverything;
+__updateDargonManagementInterfaceEverything;
