@@ -150,13 +150,13 @@ function dargonSetupEnvironment_pullAndForkRepositories() {
          popd > /dev/null;
       fi
       pushd $repositoryPath > /dev/null;
-      hub remote set-url origin;
+      hub remote set-url -p origin;
       if [[ -z `git config remote.upstream.url` ]]
       then
-         hub remote add upstream "$DARGON_GITHUB_ORGANIZATION_NAME/$i";
+         hub remote add -p upstream "$DARGON_GITHUB_ORGANIZATION_NAME/$i";
          echo "Created remote upstream"
       else
-         hub remote set-url upstream "$DARGON_GITHUB_ORGANIZATION_NAME/$i";
+         hub remote set-url -p upstream "$DARGON_GITHUB_ORGANIZATION_NAME/$i";
          echo "Updated remote upstream"
       fi
       
