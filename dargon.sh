@@ -190,7 +190,7 @@ function dargonNugetPackageRestore() {
    popd > /dev/null
 }
 
-function dargonPull() {
+function dargonPullOrigin() {
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    echo "Pulling latest Dargon source code..."
    for i in "${DARGON_REPOSITORY_NAMES[@]}"
@@ -203,14 +203,14 @@ function dargonPull() {
    popd > /dev/null
 }
 
-function dargonPull() {
+function dargonPullUpstream() {
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    echo "Pulling latest Dargon source code..."
    for i in "${DARGON_REPOSITORY_NAMES[@]}"
    do
       pushd "$DARGON_REPOSITORIES_DIR/$i" > /dev/null;
       echo -n -e "$COLOR_LIME$i: $COLOR_NONE";
-      git pull;
+      git pull upstream master;
       popd > /dev/null;      
    done
    popd > /dev/null
