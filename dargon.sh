@@ -1,11 +1,12 @@
-if [[ -z "$DARGON_UTILITIES_DIR" ]]; then echo "Warning: \$DARGON_UTILITIES_DIR ISN'T SET!"; fi
+if [[ "$DARGON_UTILITIES_DIR" ]]; then export DARGON_DEVELOPER_SCRIPTS_DIR="$DARGON_UTILITIES_DIR"; fi
+if [[ -z "$DARGON_DEVELOPER_SCRIPTS_DIR" ]]; then echo "Warning: \$DARGON_DEVELOPER_SCRIPTS_DIR ISN'T SET!"; fi
 if [[ -z "$DARGON_REPOSITORIES_DIR" ]]; then echo "Warning: \$DARGON_REPOSITORIES_DIR ISN'T SET!"; fi
 
 WYVERN_DOCKER_SSH_PORT=2122;
 WYVERN_DOCKER_ARGS="--vm='wyvern-vm' --sshport=$WYVERN_DOCKER_SSH_PORT";
 DARGON_RUBY_VERSION="2.1.3";
-DARGON_UTILITIES_TEMP_DIR="$DARGON_UTILITIES_DIR/temp";
 declare -a DARGON_REPOSITORY_NAMES=( '_default-c-sharp-repo' 'dargon-documentation' 'dargon.management-interface' 'dargon-developer-scripts' 'Dargon.Nest' 'Dargon.TestUtilities' 'libdargon.filesystem-api' 'libdargon.filesystem-impl' 'libdargon.management-api' 'libdargon.management-impl' 'libdargon.utilities' 'libdipc' 'libdnode' 'libdsp' 'libdtp' 'libdpo' 'libimdg' 'libinibin' 'librads' 'libvfm' 'the-dargon-project' 'libwarty' 'libwarty.proxies-api' 'libwarty.proxies-impl' 'NMockito' 'vssettings' );
+DARGON_UTILITIES_TEMP_DIR="$DARGON_DEVELOPER_SCRIPTS_DIR/temp";
 DARGON_GITHUB_ORGANIZATION_NAME="the-dargon-project";
 RUBY_DIR_WIN="c:/Ruby21"
 RUBY_DIR="/c/Ruby21"
@@ -26,13 +27,13 @@ fi
 # http://download.mono-project.com/archive/3.2.3/windows-installer/mono-3.2.3-gtksharp-2.12.11-win32-0.exe (do compact installation)
 
 function dargonUtilitiesVersion() {
-   pushd $DARGON_UTILITIES_DIR > /dev/null;
+   pushd $DARGON_DEVELOPER_SCRIPTS_DIR > /dev/null;
    git rev-parse HEAD;
    popd > /dev/null;
 }
 
 function dargonUtilitiesUpdate() {
-   pushd $DARGON_UTILITIES_DIR > /dev/null;
+   pushd $DARGON_DEVELOPER_SCRIPTS_DIR > /dev/null;
    git pull;
    popd > /dev/null;
 }
@@ -268,7 +269,7 @@ function dargonDeployWyvern() {
    then
       echo "ERROR: Docker is not installed!";
    else 
-      scpWyvernDirectory "$DARGON_UTILITIES_DIR/containers" "~/containers"
+      scpWyvernDirectory "$DARGON_DEVELOPER_SCRIPTS_DIR/containers" "~/containers"
    fi
 # scp your_username@remotehost.edu:foobar.txt /some/local/directory
 }
