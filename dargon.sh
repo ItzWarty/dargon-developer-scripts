@@ -141,7 +141,7 @@ function dargonSetupEnvironment_pullAndForkRepositories() {
    do
       echo -n -e "$COLOR_LIME$i: $COLOR_NONE";
       local repositoryPath="$DARGON_REPOSITORIES_DIR/$i";
-      if [[ ! -d $repositoryPath ]]
+      if [[ ! -d "$repositoryPath/.git" ]]
       then
          mkdir $repositoryPath > /dev/null;
          pushd $repositoryPath > /dev/null;
