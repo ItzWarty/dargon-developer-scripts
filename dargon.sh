@@ -146,10 +146,20 @@ function dargonSetupEnvironment_pullAndForkRepositories() {
          mkdir $repositoryPath > /dev/null;
          pushd $repositoryPath > /dev/null;
          hub clone "$DARGON_GITHUB_ORGANIZATION_NAME/$i" .;
-         hub fork;
+         hub fork --no-remote;
          popd > /dev/null;
       fi
       pushd $repositoryPath > /dev/null;
+      hub remote set-url origin;
+      if [[ -z `git config remote.upstream.url` ]]
+      then
+         hub remote add upstream "$DARGON_GITHUB_ORGANIZATION_NAME/$i";
+         echo "Created remote upstream"
+      else
+         hub remote set-url upstream "$DARGON_GITHUB_ORGANIZATION_NAME/$i";
+         echo "Updated remote upstream"
+      fi
+      
       local branch="$(git symbolic-ref HEAD 2>/dev/null)" || "";     # detached HEAD
       if [[ ! -z "$branch" ]]
       then
