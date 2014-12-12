@@ -5,7 +5,7 @@ if [[ -z "$DARGON_REPOSITORIES_DIR" ]]; then echo "Warning: \$DARGON_REPOSITORIE
 WYVERN_DOCKER_SSH_PORT=2122;
 WYVERN_DOCKER_ARGS="--vm='wyvern-vm' --sshport=$WYVERN_DOCKER_SSH_PORT";
 DARGON_RUBY_VERSION="2.1.3";
-declare -a DARGON_REPOSITORY_NAMES=( '_default-c-sharp-repo' 'dargon-documentation' 'dargon.management-interface' 'dargon-developer-scripts' 'Dargon.Nest' 'Dargon.TestUtilities' 'libdargon.filesystem-api' 'libdargon.filesystem-impl' 'libdargon.management-api' 'libdargon.management-impl' 'libdargon.utilities' 'libdipc' 'libdnode' 'libdsp' 'libdtp' 'libdpo' 'libimdg' 'libinibin' 'librads' 'libvfm' 'the-dargon-project' 'libwarty' 'libwarty.proxies-api' 'libwarty.proxies-impl' 'NMockito' 'vssettings' 'liblolskins');
+declare -a DARGON_REPOSITORY_NAMES=( '_default-c-sharp-repo' 'dargon-documentation' 'dargon.management-interface' 'dargon-developer-scripts' 'Dargon.Nest' 'Dargon.TestUtilities' 'libdargon.filesystem-api' 'libdargon.filesystem-impl' 'libdargon.hydar-api' 'libdargon.management-api' 'libdargon.management-impl' 'libdargon.utilities' 'libdipc' 'libdnode' 'libdsp' 'libdtp' 'libdpo' 'libinibin' 'liblolskins' 'librads' 'libvfm' 'the-dargon-project' 'libwarty' 'libwarty.proxies-api' 'libwarty.proxies-impl' 'NMockito' 'vssettings');
 DARGON_UTILITIES_TEMP_DIR="$DARGON_DEVELOPER_SCRIPTS_DIR/temp";
 DARGON_GITHUB_ORGANIZATION_NAME="the-dargon-project";
 RUBY_DIR_WIN="c:/Ruby21"
@@ -171,6 +171,29 @@ function dargonSetupEnvironment_pullAndForkRepositories() {
          echo "Not on a branch?";
       fi
       popd > /dev/null;
+   done
+   popd > /dev/null
+}
+
+function dargonSetupEnvironment_setupAggregateRepository() {
+   pushd $DARGON_REPOSITORIES_DIR > /dev/null;
+   echo "Setting up dargon-aggregate repository..."
+   
+   if [[ ! -d "dargon-aggregate" ]]
+   then
+      mkdir "dargon-aggregate" > /dev/null;
+   fi
+   pushd "dargon-aggregate" > /dev/null;
+   
+   if [[ ! -d ".git" ]]
+   then
+      git init > /dev/null;
+   fi
+   
+   for i in "${DARGON_REPOSITORY_NAMES[@]}"
+   do
+      echo -n -e "$COLOR_LIMEConfigure $i: $COLOR_NONE";
+      hub remote add -p "$i" "$DARGON_GITHUB_ORGANIZATION_NAME/$i";
    done
    popd > /dev/null
 }
