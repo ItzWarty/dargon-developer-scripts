@@ -3,7 +3,8 @@ if [[ -z "$DARGON_DEVELOPER_SCRIPTS_DIR" ]]; then echo "Warning: \$DARGON_DEVELO
 if [[ -z "$DARGON_REPOSITORIES_DIR" ]]; then echo "Warning: \$DARGON_REPOSITORIES_DIR ISN'T SET!"; fi
 
 WYVERN_DOCKER_SSH_PORT=2122;
-WYVERN_DOCKER_ARGS="--vm='wyvern-vm' --sshport=$WYVERN_DOCKER_SSH_PORT";
+WYVERN_VM_NAME='wyvern-vm';
+WYVERN_DOCKER_ARGS="--vm='$WYVERN_VM_NAME' --sshport=$WYVERN_DOCKER_SSH_PORT";
 DARGON_RUBY_VERSION="2.1.3";
 declare -a DARGON_REPOSITORY_NAMES=( '_default-c-sharp-repo' 'dargon-documentation' 'dargon.management-interface' 'dargon-developer-scripts' 'Dargon.Nest' 'Dargon.TestUtilities' 'libdargon.filesystem-api' 'libdargon.filesystem-impl' 'libdargon.hydar-api' 'libdargon.management-api' 'libdargon.management-impl' 'libdargon.utilities' 'libdipc' 'libdnode' 'libdsp' 'libdtp' 'libdpo' 'libinibin' 'liblolskins' 'librads' 'libvfm' 'the-dargon-project' 'libwarty' 'libwarty.proxies-api' 'libwarty.proxies-impl' 'NMockito' 'vssettings');
 DARGON_UTILITIES_TEMP_DIR="$DARGON_DEVELOPER_SCRIPTS_DIR/temp";
@@ -132,6 +133,7 @@ function dargonSetupEnvironment_installBoot2Docker() {
    popd > /dev/null;
    
    __updateDockerEverything;
+   __updateVirtualBoxEverything;
 }
 
 function dargonSetupEnvironment_pullAndForkRepositories() {
@@ -304,7 +306,11 @@ function dargonStartWyvern() {
       echo "ERROR: Docker is not installed!";
    else 
       eval "b2d $WYVERN_DOCKER_ARGS init";
+      VBoxManage sharedfolder remove "$WYVERN_VM_NAME" --name "dargon-repositories";
+      VBoxManage sharedfolder add "$WYVERN_VM_NAME" --name "dargon-repositories" --hostpath "$DARGON_REPOSITORIES_DIR" --readonly;
       eval "b2d $WYVERN_DOCKER_ARGS start";
+      sshWyvern "sudo mkdir -p /dargon/repositories";
+      sshWyvern "sudo mount -t vboxsf -o uid=0 dargon-repositories /dargon/repositories";
    fi
 }
 
@@ -376,6 +382,14 @@ function __updateNugetEverything() {
    fi
 }
 
+function __updateVirtualBoxEverything() {
+   local path="/c/Program Files/Oracle/VirtualBox";
+   if [ -e "$path" ]
+   then
+    export PATH="$path:$PATH"
+   fi
+}
+
 # DMI ILMerge Command: "C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe" "C:\my-repositories\dargon.management-interface\bin\Release\dargon.management-interface.exe" "C:\my-repositories\dargon.management-interface\bin\Release\*.dll" /targetplatform:v4 /out:C:/my-repositories/dargon.management-interface\bin\Release/dmi.exe /wildcards
 function __updateDargonManagementInterfaceEverything() {
    local path="$DARGON_UTILITIES_TEMP_DIR/dmi.exe";
@@ -391,3 +405,4 @@ function __updateDargonManagementInterfaceEverything() {
 __updateDockerEverything;
 __updateNugetEverything;
 __updateDargonManagementInterfaceEverything;
+__updateVirtualBoxEverything;
