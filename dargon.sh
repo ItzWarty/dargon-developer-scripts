@@ -336,16 +336,11 @@ function dargonStopWyvern() {
 }
 
 function sshWyvern() {
-   ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ~/.ssh/id_boot2docker -p $WYVERN_DOCKER_SSH_PORT docker@127.0.0.1;
+   ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ~/.ssh/id_boot2docker -p $WYVERN_DOCKER_SSH_PORT docker@127.0.0.1 $1;
 }
 
 function sshWyvernSilent() {
-   sshWyvern &> /dev/null;
-}
-
-function sshWyvernMany() {
-   local cmd="mkdir ~/test\nmkdir ~/test2";
-   echo $cmd > sshWyvernSilent;
+   eval "sshWyvern '$cmd'" &> /dev/null;
 }
 
 function scpWyvernDirectory() {
