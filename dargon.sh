@@ -2,9 +2,9 @@ if [[ "$DARGON_UTILITIES_DIR" ]]; then export DARGON_DEVELOPER_SCRIPTS_DIR="$DAR
 if [[ -z "$DARGON_DEVELOPER_SCRIPTS_DIR" ]]; then echo "Warning: \$DARGON_DEVELOPER_SCRIPTS_DIR ISN'T SET!"; fi
 if [[ -z "$DARGON_REPOSITORIES_DIR" ]]; then echo "Warning: \$DARGON_REPOSITORIES_DIR ISN'T SET!"; fi
 
-WYVERN_DOCKER_SSH_PORT=2122;
-WYVERN_VM_NAME='wyvern-vm';
-WYVERN_DOCKER_ARGS="--vm='$WYVERN_VM_NAME' --sshport=$WYVERN_DOCKER_SSH_PORT";
+DARGON_DOCKER_SSH_PORT=2122;
+DARGON_VM_NAME='dargon-vm';
+DARGON_DOCKER_ARGS="--vm='$DARGON_VM_NAME' --sshport=$DARGON_DOCKER_SSH_PORT";
 DARGON_RUBY_VERSION="2.1.3";
 declare -a DARGON_REPOSITORY_NAMES=( '_default-c-sharp-repo' 'dargon-documentation' 'dargon.management-interface' 'dargon-developer-scripts' 'Dargon.Nest' 'Dargon.TestUtilities' 'libdargon.filesystem-api' 'libdargon.filesystem-impl' 'libdargon.hydar-api' 'libdargon.management-api' 'libdargon.management-impl' 'libdargon.utilities' 'libdipc' 'libdnode' 'libdsp' 'libdtp' 'libdpo' 'libinibin' 'liblolskins' 'librads' 'libvfm' 'the-dargon-project' 'libwarty' 'libwarty.proxies-api' 'libwarty.proxies-impl' 'NMockito' 'vssettings');
 DARGON_UTILITIES_TEMP_DIR="$DARGON_DEVELOPER_SCRIPTS_DIR/temp";
@@ -286,7 +286,7 @@ function dargonNukeVirtualMachines() {
    then
       echo "ERROR: Docker is not installed!";
    else 
-      eval "b2d $WYVERN_DOCKER_ARGS destroy";
+      eval "b2d $DARGON_DOCKER_ARGS destroy";
    fi
 }
 
@@ -294,63 +294,47 @@ function dargonBuild() {
    echo "TODO";
 }
 
-function dargonStart() {
-   dargonStartWyvern;
-}
-
-function dargonStartWyvern() {
-   echo "Running Wyvern";
+function dargonUp() {
+   echo "Starting Docker VM";
    __updateDockerEverything;
    if [ ! $is_docker_installed ] 
    then
       echo "ERROR: Docker is not installed!";
    else 
-      eval "b2d $WYVERN_DOCKER_ARGS init";
-      VBoxManage sharedfolder remove "$WYVERN_VM_NAME" --name "dargon-repositories";
-      VBoxManage sharedfolder add "$WYVERN_VM_NAME" --name "dargon-repositories" --hostpath "$DARGON_REPOSITORIES_DIR" --readonly;
-      eval "b2d $WYVERN_DOCKER_ARGS start";
-      sshWyvern "sudo mkdir -p /dargon/repositories";
-      sshWyvern "sudo mount -t vboxsf -o uid=0 dargon-repositories /dargon/repositories";
+      eval "b2d $DARGON_DOCKER_ARGS init";
+      VBoxManage sharedfolder remove "$DARGON_VM_NAME" --name "dargon-repositories";
+      VBoxManage sharedfolder add "$DARGON_VM_NAME" --name "dargon-repositories" --hostpath "$DARGON_REPOSITORIES_DIR" --readonly;
+      eval "b2d $DARGON_DOCKER_ARGS start";
+      sshDargon "sudo mkdir -p /dargon/repositories";
+      sshDargon "sudo mount -t vboxsf -o uid=0 dargon-repositories /dargon/repositories";
    fi
 }
 
-function dargonDeployWyvern() {
-   echo "Deploying Wyvern";
+function dargonDown() {
+   echo "Stopping Docker VM";
    __updateDockerEverything;
    if [ ! $is_docker_installed ] 
    then
       echo "ERROR: Docker is not installed!";
    else 
-      scpWyvernDirectory "$DARGON_DEVELOPER_SCRIPTS_DIR/containers" "~/containers"
-   fi
-# scp your_username@remotehost.edu:foobar.txt /some/local/directory
-}
-
-function dargonStop() {
-   dargonStopWyvern;
-}
-
-function dargonStopWyvern() {
-   echo "Stopping Wyvern";
-   __updateDockerEverything;
-   if [ ! $is_docker_installed ] 
-   then
-      echo "ERROR: Docker is not installed!";
-   else 
-      eval "b2d $WYVERN_DOCKER_ARGS stop";
+      eval "b2d $DARGON_DOCKER_ARGS stop";
    fi
 }
 
-function sshWyvern() {
-   ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ~/.ssh/id_boot2docker -p $WYVERN_DOCKER_SSH_PORT docker@127.0.0.1 $1;
+function dargonStartPlatform() {
+   echo "Not Implemented";
 }
 
-function sshWyvernSilent() {
-   eval "sshWyvern '$cmd'" &> /dev/null;
+function sshDargon() {
+   ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ~/.ssh/id_boot2docker -p $DARGON_DOCKER_SSH_PORT docker@127.0.0.1 $1;
 }
 
-function scpWyvernDirectory() {
-   scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ~/.ssh/id_boot2docker -P $WYVERN_DOCKER_SSH_PORT -r $1 docker@127.0.0.1:$2
+function sshDargonSilent() {
+   eval "sshDargon '$cmd'" &> /dev/null;
+}
+
+function scpDargonDirectory() {
+   scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ~/.ssh/id_boot2docker -P $DARGON_DOCKER_SSH_PORT -r $1 docker@127.0.0.1:$2
 }
 
 function __updateDockerEverything() {
