@@ -136,6 +136,24 @@ function dargonSetupEnvironment_installBoot2Docker() {
    __updateVirtualBoxEverything;
 }
 
+function dargonSetupEnvironment_pullRepositories() {
+   pushd $DARGON_REPOSITORIES_DIR > /dev/null;
+   echo "Pulling Dargon source code..."
+   for i in "${DARGON_REPOSITORY_NAMES[@]}"
+   do
+      echo -n -e "$COLOR_LIME$i: $COLOR_NONE";
+      local repositoryPath="$DARGON_REPOSITORIES_DIR/$i";
+      if [[ ! -d "$repositoryPath/.git" ]]
+      then
+         mkdir $repositoryPath > /dev/null;
+         pushd $repositoryPath > /dev/null;
+         hub clone "$DARGON_GITHUB_ORGANIZATION_NAME/$i" .;
+         popd > /dev/null;
+      fi
+   done
+   popd > /dev/null
+}
+
 function dargonSetupEnvironment_pullAndForkRepositories() {
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    echo "Pulling and forking Dargon source code..."
