@@ -57,7 +57,7 @@ function dargonSetupEnvironment() {
    else 
       echo "DOCKER IS ALREADY INSTALLED";
    fi
-   dargonSetupEnvironment_pullAndForkRepositories;
+   dargonSetupEnvironment_pullRepositories;
    dargonNugetPackageRestore;
    dargonStartWyvern;
    echo "TODO";
