@@ -44,7 +44,7 @@ function releasePackage() {
    ASSEMBLY_DESCRIPTION="$(echo \"$ASSEMBLY_INFO\" | grep AssemblyDescription | sed -n -e 's/.*AssemblyDescription\w*(\w*"//p' | sed -n -e 's/")].*//p')";
    ASSEMBLY_COPYRIGHT="$(echo \"$ASSEMBLY_INFO\" | grep AssemblyCopyright | sed -n -e 's/.*AssemblyCopyright\w*(\w*"//p' | sed -n -e 's/")].*//p')";
    
-   mono ~/.nuget/NuGet.exe spec "${ProjectName}.csproj" -f;
+   mono ~/.nuget/NuGet.exe spec "${ProjectName}" -f;
    
    sed -i -e "s/[$]id[$]/${ProjectName}/" "${ProjectName}.nuspec" > /dev/null;
    if [[ -z "${Stage}" ]]; then
