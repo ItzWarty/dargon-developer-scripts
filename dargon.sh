@@ -392,6 +392,10 @@ function __updateVirtualBoxEverything() {
    fi
 }
 
+function __updateKvmEverything() {
+   alias kvm="cmd /R kvm";
+}
+
 # DMI ILMerge Command: "C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe" "C:\my-repositories\dargon.management-interface\bin\Release\dargon.management-interface.exe" "C:\my-repositories\dargon.management-interface\bin\Release\*.dll" /targetplatform:v4 /out:C:/my-repositories/dargon.management-interface\bin\Release/dmi.exe /wildcards
 function __updateDargonManagementInterfaceEverything() {
    local path="$DARGON_UTILITIES_TEMP_DIR/dmi.exe";
@@ -408,3 +412,4 @@ __updateDockerEverything;
 __updateNugetEverything;
 __updateDargonManagementInterfaceEverything;
 __updateVirtualBoxEverything;
+__updateKvmEverything;
