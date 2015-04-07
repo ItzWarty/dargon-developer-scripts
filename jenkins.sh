@@ -25,6 +25,16 @@ function buildSolution() {
    popd;
 }
 
+function releaseSubPackage() {
+   local subpackageName=$1;
+
+   echo "hello! ${Major}.${Minor}.${Patch}-${Stage}";
+   
+   pushd "${WORKSPACE}/$subpackageName"; 
+   
+   releasePackageHelper;
+}
+
 # Required Variables:
 #   $ProjectPage - probably the link to the project repository.
 #   $ProjectLicense - link to project license.
@@ -34,7 +44,10 @@ function releasePackage() {
    echo "${WORKSPACE}/.nuget/NuGet.exe";
    
    pushd "${WORKSPACE}"; 
-   
+   releasePackageHelper;
+}
+
+function releasePackageHelper {
    # Turn Shell Script Tracing Off
    set +x;
    
