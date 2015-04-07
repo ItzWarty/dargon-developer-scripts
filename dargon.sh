@@ -311,10 +311,15 @@ function dargonNukeVirtualMachines() {
 
 function dargonBuild() {
    dargonBuildNestDaemon;
+   dargonBuildNestHost;
 }
 
 function dargonBuildNestDaemon() {
    dargonBuildEgg "nestd" "Dargon.Nest/nestd" "nestd.csproj";
+}
+
+function dargonBuildNestHost() {
+   dargonBuildEgg "nest-host" "Dargon.Nest/nest-host" "nest-host.csproj";
 }
 
 function dargonBuildEgg() {
