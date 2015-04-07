@@ -26,11 +26,9 @@ function buildSolution() {
 }
 
 function releaseSubPackage() {
-   local subpackageName=$1;
-
    echo "hello! ${Major}.${Minor}.${Patch}-${Stage}";
    
-   pushd "${WORKSPACE}/$subpackageName"; 
+   pushd "${WORKSPACE}/${ProjectName}"; 
    
    releasePackageHelper;
 }
