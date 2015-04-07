@@ -322,6 +322,10 @@ function dargonBuildNestHost() {
    dargonBuildEgg "nest-host" "Dargon.Nest/nest-host" "nest-host.csproj";
 }
 
+function dargonBuildNestExampleEgg() {
+   dargonBuildEgg "dev-egg-example" "Dargon.Nest/dev-egg-example" "dev-egg-example.csproj";
+}
+
 function dargonBuildEgg() {
    local eggName=$1;
    local projectDirPath=$2;
