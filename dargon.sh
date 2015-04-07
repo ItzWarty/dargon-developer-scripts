@@ -14,6 +14,7 @@ RUBY_DIR="/c/Ruby21"
 BOOT2DOCKER_VERSION="v1.4.1";
 
 COLOR_LIME='\e[1;32m';
+COLOR_CYAN='\e[1;36m';
 COLOR_NONE='\e[0m';
 
 if [ ! -e $DARGON_UTILITIES_TEMP_DIR ]
@@ -309,7 +310,34 @@ function dargonNukeVirtualMachines() {
 }
 
 function dargonBuild() {
-   echo "TODO";
+   dargonBuildNestDaemon;
+}
+
+function dargonBuildNestDaemon() {
+   dargonBuildEgg "nestd" "Dargon.Nest/nestd" "nestd.csproj";
+}
+
+function dargonBuildEgg() {
+   local eggName=$1;
+   local projectDirPath=$2;
+   local projectFileName=$3;
+
+   __updateMsbuildEverything;
+   __updateDargonNestEverything;
+   
+   pushd "$DARGON_REPOSITORIES_DIR/$projectDirPath" > /dev/null;
+   
+   echo -e "== $COLOR_LIME$eggName$COLOR_NONE =="
+   echo -e "${COLOR_CYAN}Build Project:${COLOR_NONE}"
+   eval "msbuild /target:Build /property:Configuration=Release /property:OutDir=./bin/temp/ /verbosity:m '$projectFileName'";
+   echo -e ""
+   
+   echo -e "${COLOR_CYAN}Create Egg:${COLOR_NONE}"
+   eval "nest --nest-path=$NEST_DIR create-egg '$eggName' 'dev' './bin/temp/'";
+   
+   popd > /dev/null;
+   
+# MsBuild.exe [Path to your solution(*.sln)] /t:Build /p:Configuration=Release /p:TargetFramework=v4.0
 }
 
 function dargonUp() {
@@ -396,6 +424,14 @@ function __updateKvmEverything() {
    alias kvm="cmd /R kvm";
 }
 
+function __updateMsbuildEverything() {
+   if [ -e "$MSBUILD_DIR" ]
+   then
+      alias msbuild="'$MSBUILD_DIR/MSBuild.exe'";
+      alias csc="'$MSBUILD_DIR/csc.exe'";
+   fi
+}
+
 # DMI ILMerge Command: "C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe" "C:\my-repositories\dargon.management-interface\bin\Release\dargon.management-interface.exe" "C:\my-repositories\dargon.management-interface\bin\Release\*.dll" /targetplatform:v4 /out:C:/my-repositories/dargon.management-interface\bin\Release/dmi.exe /wildcards
 function __updateDargonManagementInterfaceEverything() {
    local path="$DARGON_UTILITIES_TEMP_DIR/dmi.exe";
@@ -407,9 +443,19 @@ function __updateDargonManagementInterfaceEverything() {
       alias dmiPlatform="dmi localhost:31000 &";
    fi
 }
+function __updateDargonNestEverything() {
+   local path="$DARGON_UTILITIES_TEMP_DIR/nest.exe";
+   if [ -e "$path" ]
+   then
+      function nest { "$DARGON_UTILITIES_TEMP_DIR/nest.exe" "$@"; }
+      export -f nest;
+   fi
+}
 
 __updateDockerEverything;
 __updateNugetEverything;
 __updateDargonManagementInterfaceEverything;
+__updateDargonNestEverything;
 __updateVirtualBoxEverything;
 __updateKvmEverything;
+__updateMsbuildEverything;
