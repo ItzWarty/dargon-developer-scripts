@@ -312,6 +312,7 @@ function dargonNukeVirtualMachines() {
 function dargonBuild() {
    dargonBuildNestDaemon;
    dargonBuildNestHost;
+   dargonBuildCoreDaemon;
 }
 
 function dargonBuildNestDaemon() {
@@ -324,6 +325,10 @@ function dargonBuildNestHost() {
 
 function dargonBuildNestExampleEgg() {
    dargonBuildEgg "dev-egg-example" "Dargon.Nest/dev-egg-example" "dev-egg-example.csproj";
+}
+
+function dargonBuildCoreDaemon() {
+   dargonBuildEgg "cored" "the-dargon-project/daemon-impl" "daemon-impl.csproj";
 }
 
 function dargonBuildEgg() {
