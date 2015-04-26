@@ -466,10 +466,21 @@ function __updateDargonNestEverything() {
    fi
 }
 
+# NuSpecGen ILMerge Command: "C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe" "C:\my-repositories\NuSpecGen\bin\Release\NuSpecGen.exe" "C:\my-repositories\NuSpecGen\bin\Release\*.dll" /targetplatform:v4 /out:C:/my-repositories/NuSpecGen\bin\Release/ilmerge/NuSpecGen.exe /wildcards
+function __updateNuSpecGenEverything() {
+   local path="$DARGON_UTILITIES_TEMP_DIR/NuSpecGen.exe";
+   if [ -e "$path" ]
+   then
+      function NuSpecGen { "$DARGON_UTILITIES_TEMP_DIR/NuSpecGen.exe" "$@"; }
+      export -f NuSpecGen;
+   fi
+}
+
 __updateDockerEverything;
 __updateNugetEverything;
 __updateDargonManagementInterfaceEverything;
 __updateDargonNestEverything;
+__updateNuSpecGenEverything;
 __updateVirtualBoxEverything;
 __updateKvmEverything;
 __updateMsbuildEverything;
