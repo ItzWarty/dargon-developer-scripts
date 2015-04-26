@@ -46,48 +46,13 @@ function releasePackage() {
 }
 
 function releasePackageHelper {
-   # Turn Shell Script Tracing Off
-   set +x;
-   
-   ASSEMBLY_INFO="$(cat Properties/AssemblyInfo.cs)";
-   ASSEMBLY_TITLE="$(echo \"$ASSEMBLY_INFO\" | grep AssemblyTitle | sed -n -e 's/.*AssemblyTitle\w*(\w*"//p' | sed -n -e 's/")].*//p')";
-   ASSEMBLY_AUTHORS="$(echo \"$ASSEMBLY_INFO\" | grep AssemblyCompany | sed -n -e 's/.*AssemblyCompany\w*(\w*"//p' | sed -n -e 's/")].*//p')";
-   ASSEMBLY_DESCRIPTION="$(echo \"$ASSEMBLY_INFO\" | grep AssemblyDescription | sed -n -e 's/.*AssemblyDescription\w*(\w*"//p' | sed -n -e 's/")].*//p')";
-   ASSEMBLY_COPYRIGHT="$(echo \"$ASSEMBLY_INFO\" | grep AssemblyCopyright | sed -n -e 's/.*AssemblyCopyright\w*(\w*"//p' | sed -n -e 's/")].*//p')";
-   
-   mono ~/.nuget/NuGet.exe spec "${ProjectName}" -f;
-   
-   sed -i -e "s/[$]id[$]/${ProjectName}/" "${ProjectName}.nuspec" > /dev/null;
    if [[ -z "${Stage}" ]]; then
      PACKAGE_VERSION="${Major}.${Minor}.${Patch}";
    else
      PACKAGE_VERSION="${Major}.${Minor}.${Patch}-${Stage}";
    fi
-      
-   sed -i -e "s/[$]version[$]/${PACKAGE_VERSION}/" "${ProjectName}.nuspec" > /dev/null;
-   sed -i -e "s/[$]title[$]/${ASSEMBLY_TITLE}/" "${ProjectName}.nuspec" > /dev/null;
-   sed -i -e "s/[$]author[$]/${ASSEMBLY_AUTHORS}/" "${ProjectName}.nuspec" > /dev/null;
-   sed -i -e "s/[$]description[$]/${ASSEMBLY_DESCRIPTION}/" "${ProjectName}.nuspec" > /dev/null;
-   sed -i -e "s/[$]description[$]/${ASSEMBLY_DESCRIPTION}/" "${ProjectName}.nuspec" > /dev/null;
-   sed -i -e "s|http://PROJECT_URL_.*_LINE|${ProjectPage}|" "${ProjectName}.nuspec" > /dev/null;
-   
-   # delete icon url line
-   sed -i '/iconUrl/d' "${ProjectName}.nuspec" > /dev/null;
-   
-   # delete tags line
-   sed -i '/tags/d' "${ProjectName}.nuspec" > /dev/null;
-   
-   # Project License
-   sed -i -e "s|http://LICENSE_URL_.*_LINE|${ProjectLicense}|" "${ProjectName}.nuspec" > /dev/null;
-   
-   # Add Release to lib/net45 of output
-   sed -i "/\/metadata/a \
-     <files> \
-       <file src=\"bin/Release/**/*.*\" target=\"lib/${PackageProfile}\\\" /> \
-     <\/files>" "${ProjectName}.nuspec" > /dev/null;
-   
-   # Turn Shell Script Tracing On
-   set -x;
+ 
+   mono ~/.nuget/NuSpecGen.exe -p "${ProjectName}" -v "${PACKAGE_VERSION}" -l "${ProjectLicense}" -u "${ProjectPage}" -t "${PackageProfile}";
    
    # remove all nuget packages, pack new nuget package
    rm -f *.nupkg;
