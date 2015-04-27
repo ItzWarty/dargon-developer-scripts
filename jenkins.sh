@@ -46,8 +46,6 @@ function releasePackage() {
 }
 
 function releasePackageHelper {
-   indent() { sed 's/^/  /'; };
-
    if [[ -z "${Stage}" ]]; then
      PACKAGE_VERSION="${Major}.${Minor}.${Patch}";
    else
@@ -56,25 +54,25 @@ function releasePackageHelper {
  
    # generate *.nuspec file for our project
    echo "Generating nuspec file: ";
-   mono ~/.nuget/NuSpecGen.exe -p "${ProjectName}" -v "${PACKAGE_VERSION}" -l "${ProjectLicense}" -u "${ProjectPage}" -t "${PackageProfile}" | indent;
+   mono ~/.nuget/NuSpecGen.exe -p "${ProjectName}" -v "${PACKAGE_VERSION}" -l "${ProjectLicense}" -u "${ProjectPage}" -t "${PackageProfile}";
    
    # print nuspec file to console
    echo "Printing generated nuspec file: ";
-   cat "${ProjectName}.nuspec" | indent;
+   cat "${ProjectName}.nuspec";
    echo "";
    
    # remove all nuget packages, pack new nuget package
    echo "Removing previously generated nupkg files: ";
-   rm -f *.nupkg | indent;
+   rm -f *.nupkg;
    echo "";
    
    echo "Running nuget pack with the nuspec file: ";
-   mono ~/.nuget/NuGet.exe pack "${ProjectName}.nuspec" -Verbose -Prop Configuration=Release | indent;
+   mono ~/.nuget/NuGet.exe pack "${ProjectName}.nuspec" -Verbose -Prop Configuration=Release;
    echo "";
    
    # push to NuGet repository
    echo "Pushing nuget package to repository: ";
-   mono ~/.nuget/NuGet.exe push "${ProjectName}.${PACKAGE_VERSION}.nupkg" -Source http://nuget.dargon.io/ | indent;
+   mono ~/.nuget/NuGet.exe push "${ProjectName}.${PACKAGE_VERSION}.nupkg" -Source http://nuget.dargon.io/;
    echo "";
    
    popd;
