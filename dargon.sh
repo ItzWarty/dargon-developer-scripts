@@ -312,7 +312,10 @@ function dargonNukeVirtualMachines() {
 function dargonBuild() {
    dargonBuildNestDaemon;
    dargonBuildNestHost;
+   dargonBuildNestExampleEgg;
+   dargonBuildNestRunnerEgg;
    dargonBuildCoreDaemon;
+   dargonBuildDargonManager;
 }
 
 function dargonBuildNestDaemon() {
@@ -327,8 +330,16 @@ function dargonBuildNestExampleEgg() {
    dargonBuildEgg "dev-egg-example" "Dargon.Nest/dev-egg-example" "dev-egg-example.csproj";
 }
 
+function dargonBuildNestRunnerEgg() {
+   dargonBuildEgg "dev-egg-runner" "Dargon.Nest/dev-egg-runner" "dev-egg-runner.csproj";
+}
+
 function dargonBuildCoreDaemon() {
    dargonBuildEgg "cored" "the-dargon-project/daemon-impl" "daemon-impl.csproj";
+}
+
+function dargonBuildDargonManager() {
+   dargonBuildEgg "dargon-manager" "the-dargon-project/dargon-manager" "dargon-manager.csproj";
 }
 
 function dargonBuildEgg() {
