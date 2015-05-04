@@ -8,7 +8,7 @@ DARGON_DOCKER_SSH_PORT=2122;
 DARGON_VM_NAME='dargon-vm';
 DARGON_DOCKER_ARGS="--vm='$DARGON_VM_NAME' --sshport=$DARGON_DOCKER_SSH_PORT";
 DARGON_RUBY_VERSION="2.1.3";
-declare -a DARGON_REPOSITORY_NAMES=( '_default-c-sharp-repo' 'dargon-documentation' 'Dargon.Hydar' 'dargon.management-interface' 'dargon-developer-scripts' 'Dargon.Nest' 'Dargon.TestUtilities' 'libdargon.filesystem-api' 'libdargon.filesystem-impl' 'libdargon.hydar-api' 'libdargon.management-api' 'libdargon.management-impl' 'libdargon.utilities' 'libdipc' 'libdnode' 'libdsp' 'libdtp' 'libdpo' 'libinibin' 'liblolskins' 'librads' 'libvfm' 'the-dargon-project' 'libwarty' 'libwarty.proxies-api' 'libwarty.proxies-impl' 'NMockito' 'dargon.modelviewer' 'liblolmap' 'vssettings');
+declare -a DARGON_REPOSITORY_NAMES=( '_default-c-sharp-repo' 'dargon-documentation' 'Dargon.Hydar' 'dargon.management-interface' 'dargon-developer-scripts' 'Dargon.Nest' 'Dargon.TestUtilities' 'Dargon.FileSystems.Api' 'Dargon.FileSystems.Impl' 'libdargon.hydar-api' 'Dargon.Management.Api' 'Dargon.Management.Impl' 'Dargon.Utilities' 'libdipc' 'Dargon.IO' 'Dargon.Services' 'Dargon.Transport' 'Dargon.PortableObjects' 'libinibin' 'liblolskins' 'Dargon.RADS' 'liblolmap' 'libvfm' 'the-dargon-project' 'ItzWarty.Commons' 'ItzWarty.Proxies.Api' 'ItzWarty.Proxies.Impl' 'NMockito' 'dargon.modelviewer' 'vssettings' 'libdargon.hydar-local-impl' 'Dargon.SystemState.Api' 'Dargon.Platform' 'dockerfiles' 'Dargon.PortableObject.Streams');
 DARGON_UTILITIES_TEMP_DIR="$DARGON_DEVELOPER_SCRIPTS_DIR/temp";
 DARGON_GITHUB_ORGANIZATION_NAME="the-dargon-project";
 RUBY_DIR_WIN="c:/Ruby21"
