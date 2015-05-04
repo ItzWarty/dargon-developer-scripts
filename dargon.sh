@@ -1,6 +1,8 @@
 if [[ "$DARGON_UTILITIES_DIR" ]]; then export DARGON_DEVELOPER_SCRIPTS_DIR="$DARGON_UTILITIES_DIR"; fi
 if [[ -z "$DARGON_DEVELOPER_SCRIPTS_DIR" ]]; then echo "Warning: \$DARGON_DEVELOPER_SCRIPTS_DIR ISN'T SET!"; fi
 if [[ -z "$DARGON_REPOSITORIES_DIR" ]]; then echo "Warning: \$DARGON_REPOSITORIES_DIR ISN'T SET!"; fi
+if [[ -z "$MSBUILD_DIR" ]]; then echo "Warning: \$MSBUILD_DIR ISN'T SET!"; fi
+if [[ -z "$NEST_DIR" ]]; then echo "Warning: \$NEST_DIR ISN'T SET!"; fi
 
 DARGON_DOCKER_SSH_PORT=2122;
 DARGON_VM_NAME='dargon-vm';
