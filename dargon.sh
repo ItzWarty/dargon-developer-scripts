@@ -348,13 +348,18 @@ function dargonBuildEgg() {
    local eggName=$1;
    local projectDirPath=$2;
    local projectFileName=$3;
-
+   
+   __updateNugetEverything;
    __updateMsbuildEverything;
    __updateDargonNestEverything;
    
    pushd "$DARGON_REPOSITORIES_DIR/$projectDirPath" > /dev/null;
    
    echo -e "== $COLOR_LIME$eggName$COLOR_NONE =="
+   echo -e "${COLOR_CYAN}Restoring Packages:${COLOR_NONE}"
+   dargonBuild_restoreNugetPackages;
+   echo -e ""
+   
    echo -e "${COLOR_CYAN}Build Project:${COLOR_NONE}"
    eval "msbuild /target:Build /property:Configuration=Release /property:OutDir=./bin/temp/ /verbosity:m '$projectFileName'";
    echo -e ""
@@ -365,6 +370,20 @@ function dargonBuildEgg() {
    popd > /dev/null;
    
 # MsBuild.exe [Path to your solution(*.sln)] /t:Build /p:Configuration=Release /p:TargetFramework=v4.0
+}
+
+function dargonBuild_restoreNugetPackages() {
+   if [ -f "NuGet.Config" ]
+   then
+      eval "nuget restore"
+   elif [[ "$PWD" == "/" ]]
+   then
+      echo "WARNING: Reached root directory but did not find NuGet.Config!";
+   else   
+      pushd .. > /dev/null;
+      dargonBuild_restoreNugetPackages;
+      popd > /dev/null;
+   fi
 }
 
 function dargonUp() {
