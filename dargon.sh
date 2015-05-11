@@ -71,7 +71,7 @@ function dargonSetupEnvironment_installRuby() {
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    local ruby_installer_name="ruby_installer_$DARGON_RUBY_VERSION.exe"
    local ruby_installer_path="$DARGON_UTILITIES_TEMP_DIR/$ruby_installer_name";
-   curl -o $ruby_installer_path -O "http://dl.bintray.com/oneclick/rubyinstaller/rubyinstaller-$DARGON_RUBY_VERSION.exe?direct";
+   curl -L -o $ruby_installer_path "http://dl.bintray.com/oneclick/rubyinstaller/rubyinstaller-$DARGON_RUBY_VERSION.exe";
    echo "Running Ruby Installer!";
    pushd $DARGON_UTILITIES_TEMP_DIR > /dev/null;
    cmd <<< "$ruby_installer_name /verysilent /LOADINF=$RUBY_SETTINGS_FILE_NAME /dir=$RUBY_DIR_WIN /tasks=modpath" >> /dev/null;
