@@ -44,29 +44,29 @@ function dargonUtilitiesUpdate() {
 
 function dargonSetupEnvironment() {
    command -v ruby >/dev/null 2>&1 || {
-      dargonSetupEnvironment_installRuby;
+      _dargonSetupEnvironment_installRuby;
    };
    command -v hub >/dev/null 2>&1 || {
-      dargonSetupEnvironment_installHub;
+      _dargonSetupEnvironment_installHub;
    };
    command -v nuget >/dev/null 2>&1 || {
-      dargonSetupEnvironment_installNuget;
+      _dargonSetupEnvironment_installNuget;
    };
    
    __updateDockerEverything;
    if [ ! $is_docker_installed ]
    then
-      dargonSetupEnvironment_installDocker;
+      _dargonSetupEnvironment_installDocker;
    else 
       echo "DOCKER IS ALREADY INSTALLED";
    fi
-   dargonSetupEnvironment_pullRepositories;
+   _dargonSetupEnvironment_pullRepositories;
    dargonNugetPackageRestore;
    dargonStartWyvern;
    echo "TODO";
 }
 
-function dargonSetupEnvironment_installRuby() {
+function _dargonSetupEnvironment_installRuby() {
    echo "Installing Ruby $DARGON_RUBY_VERSION!";
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    local ruby_installer_name="ruby_installer_$DARGON_RUBY_VERSION.exe"
@@ -84,7 +84,7 @@ function dargonSetupEnvironment_installRuby() {
    echo "Done installing Ruby!";
 }
 
-function dargonSetupEnvironment_installHub() {
+function _dargonSetupEnvironment_installHub() {
    echo "Installing Hub!";
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    if [ ! -e hub ]
@@ -98,7 +98,7 @@ function dargonSetupEnvironment_installHub() {
    echo "Done installing Hub!";
 }
 
-function dargonSetupEnvironment_installNuget() {
+function _dargonSetupEnvironment_installNuget() {
    echo "Installing Nuget!";
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    local nuget_executable_name="nuget.exe"
@@ -109,7 +109,7 @@ function dargonSetupEnvironment_installNuget() {
    __updateNugetEverything;
 }
 
-function dargonSetupEnvironment_installDargonManagementInterface() {
+function _dargonSetupEnvironment_installDargonManagementInterface() {
    echo "Installing Dargon Management Interface (dmi)!";
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    local dmi_executable_name="dmi.exe"
@@ -122,7 +122,7 @@ function dargonSetupEnvironment_installDargonManagementInterface() {
    __updateDargonManagementInterfaceEverything;
 }
 
-function dargonSetupEnvironment_installBoot2Docker() {
+function _dargonSetupEnvironment_installBoot2Docker() {
    echo "Installing Boot2Docker!";
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    local b2d_installer_name="b2d_installer_$BOOT2DOCKER_VERSION.exe"
@@ -139,7 +139,7 @@ function dargonSetupEnvironment_installBoot2Docker() {
    __updateVirtualBoxEverything;
 }
 
-function dargonSetupEnvironment_pullRepositories() {
+function _dargonSetupEnvironment_pullRepositories() {
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    echo "Pulling Dargon source code..."
    for i in "${DARGON_REPOSITORY_NAMES[@]}"
@@ -157,7 +157,7 @@ function dargonSetupEnvironment_pullRepositories() {
    popd > /dev/null
 }
 
-function dargonSetupEnvironment_pullAndForkRepositories() {
+function _dargonSetupEnvironment_pullAndForkRepositories() {
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    echo "Pulling and forking Dargon source code..."
    for i in "${DARGON_REPOSITORY_NAMES[@]}"
@@ -198,7 +198,7 @@ function dargonSetupEnvironment_pullAndForkRepositories() {
    popd > /dev/null
 }
 
-function dargonSetupEnvironment_setupAggregateRepository() {
+function _dargonSetupEnvironment_setupAggregateRepository() {
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    echo "Setting up dargon-aggregate repository..."
    
@@ -361,7 +361,7 @@ function dargonBuildEgg() {
    echo -e ""
    
    echo -e "${COLOR_CYAN}Build Project:${COLOR_NONE}"
-   eval "msbuild /target:Build /property:Configuration=Release /property:OutDir=./bin/temp/ /verbosity:m '$projectFileName'";
+   eval "msbuild /target:Build /property:Configuration=Debug /property:OutDir=./bin/temp/ /verbosity:m '$projectFileName'";
    echo -e ""
    
    echo -e "${COLOR_CYAN}Create Egg:${COLOR_NONE}"
