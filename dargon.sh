@@ -413,6 +413,10 @@ function dargonDown() {
    fi
 }
 
+function dargonListNestProcesses() {
+   WMIC PROCESS get ProcessId,CommandLine /format:csv | grep nest | cut -d ',' -f 2-;
+}
+
 function dargonStartPlatform() {
    echo "Not Implemented";
 }
