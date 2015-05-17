@@ -230,7 +230,7 @@ function dargonNugetPackageRestore() {
    do
       pushd "$DARGON_REPOSITORIES_DIR/$i" > /dev/null;
       echo -n -e "$COLOR_LIME$i: $COLOR_NONE";
-      eval "nuget restore";
+      _dargonBuild_restoreNugetPackages;
       popd > /dev/null;      
    done
    popd > /dev/null
