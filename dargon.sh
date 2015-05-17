@@ -344,30 +344,52 @@ function _dargonBuildDargonManager() {
    _dargonBuildEgg "dargon-manager" "the-dargon-project/dargon-manager" "dargon-manager.csproj";
 }
 
-function _dargonBuildEgg() {
+function _dargonBuildEgg() {   
    local eggName=$1;
    local projectDirPath=$2;
    local projectFileName=$3;
    
+   if [[ -z "$eggName" ]]; then
+      echo "Empty eggName";
+      return 1;
+   fi
+   if [[ -z "$projectDirPath" ]]; then
+      echo "Empty projectDirPath";
+      return 1;
+   fi
+   if [[ -z "$projectFileName" ]]; then
+      echo "Empty projectFileName";
+      return 1;
+   fi
+   
+   echo -e "== $COLOR_LIME$eggName$COLOR_NONE =="
    __updateNugetEverything;
    __updateMsbuildEverything;
    __updateDargonNestEverything;
    
    pushd "$DARGON_REPOSITORIES_DIR/$projectDirPath" > /dev/null;
-   
-   echo -e "== $COLOR_LIME$eggName$COLOR_NONE =="
-   echo -e "${COLOR_CYAN}Restoring Packages:${COLOR_NONE}"
-   _dargonBuild_restoreNugetPackages;
-   echo -e ""
-   
-   echo -e "${COLOR_CYAN}Build Project:${COLOR_NONE}"
-   eval "msbuild /target:Build /property:Configuration=Debug /property:OutDir=./bin/temp/ /verbosity:m '$projectFileName'";
-   echo -e ""
-   
-   echo -e "${COLOR_CYAN}Create Egg:${COLOR_NONE}"
-   eval "nest --nest-path=$NEST_DIR create-egg '$eggName' 'dev' './bin/temp/'";
-   
-   popd > /dev/null;
+   if [ $? -ne 0 ]; then
+      echo "Failed to cd to $DARGON_REPOSITORIES_DIR/$projectDirPath";
+      return 1;
+   else      
+      echo -e "${COLOR_CYAN}Restoring Packages:${COLOR_NONE}"
+      _dargonBuild_restoreNugetPackages;
+      echo -e ""
+      
+      echo -e "${COLOR_CYAN}Build Project:${COLOR_NONE}"
+      eval "msbuild /target:Build /property:Configuration=Debug /property:OutDir=./bin/temp/ /verbosity:m '$projectFileName'";
+      echo -e ""
+      
+      echo -e "${COLOR_CYAN}Cleaning Egg Directory:${COLOR_NONE}";
+      eval "rm -rf $NEST_DIR/$eggName/*";
+      echo -e "done";
+      echo -e "";
+      
+      echo -e "${COLOR_CYAN}Create Egg:${COLOR_NONE}"
+      eval "nest --nest-path=$NEST_DIR create-egg '$eggName' 'dev' './bin/temp/'";
+      
+      popd > /dev/null;
+   fi
    
 # MsBuild.exe [Path to your solution(*.sln)] /t:Build /p:Configuration=Release /p:TargetFramework=v4.0
 }
