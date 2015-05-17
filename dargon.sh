@@ -312,39 +312,39 @@ function dargonNukeVirtualMachines() {
 }
 
 function dargonBuild() {
-   dargonBuildNestDaemon;
-   dargonBuildNestHost;
-   dargonBuildNestExampleEgg;
-   dargonBuildNestRunnerEgg;
-   dargonBuildCoreDaemon;
-   dargonBuildDargonManager;
+   _dargonBuildNestDaemon;
+   _dargonBuildNestHost;
+   _dargonBuildNestExampleEgg;
+   _dargonBuildNestRunnerEgg;
+   _dargonBuildCoreDaemon;
+   _dargonBuildDargonManager;
 }
 
-function dargonBuildNestDaemon() {
-   dargonBuildEgg "nestd" "Dargon.Nest/nestd" "nestd.csproj";
+function _dargonBuildNestDaemon() {
+   _dargonBuildEgg "nestd" "Dargon.Nest/nestd" "nestd.csproj";
 }
 
-function dargonBuildNestHost() {
-   dargonBuildEgg "nest-host" "Dargon.Nest/nest-host" "nest-host.csproj";
+function _dargonBuildNestHost() {
+   _dargonBuildEgg "nest-host" "Dargon.Nest/nest-host" "nest-host.csproj";
 }
 
-function dargonBuildNestExampleEgg() {
-   dargonBuildEgg "dev-egg-example" "Dargon.Nest/dev-egg-example" "dev-egg-example.csproj";
+function _dargonBuildNestExampleEgg() {
+   _dargonBuildEgg "dev-egg-example" "Dargon.Nest/dev-egg-example" "dev-egg-example.csproj";
 }
 
-function dargonBuildNestRunnerEgg() {
-   dargonBuildEgg "dev-egg-runner" "Dargon.Nest/dev-egg-runner" "dev-egg-runner.csproj";
+function _dargonBuildNestRunnerEgg() {
+   _dargonBuildEgg "dev-egg-runner" "Dargon.Nest/dev-egg-runner" "dev-egg-runner.csproj";
 }
 
-function dargonBuildCoreDaemon() {
-   dargonBuildEgg "cored" "the-dargon-project/daemon-impl" "daemon-impl.csproj";
+function _dargonBuildCoreDaemon() {
+   _dargonBuildEgg "cored" "the-dargon-project/daemon-impl" "daemon-impl.csproj";
 }
 
-function dargonBuildDargonManager() {
-   dargonBuildEgg "dargon-manager" "the-dargon-project/dargon-manager" "dargon-manager.csproj";
+function _dargonBuildDargonManager() {
+   _dargonBuildEgg "dargon-manager" "the-dargon-project/dargon-manager" "dargon-manager.csproj";
 }
 
-function dargonBuildEgg() {
+function _dargonBuildEgg() {
    local eggName=$1;
    local projectDirPath=$2;
    local projectFileName=$3;
@@ -357,7 +357,7 @@ function dargonBuildEgg() {
    
    echo -e "== $COLOR_LIME$eggName$COLOR_NONE =="
    echo -e "${COLOR_CYAN}Restoring Packages:${COLOR_NONE}"
-   dargonBuild_restoreNugetPackages;
+   _dargonBuild_restoreNugetPackages;
    echo -e ""
    
    echo -e "${COLOR_CYAN}Build Project:${COLOR_NONE}"
@@ -372,7 +372,7 @@ function dargonBuildEgg() {
 # MsBuild.exe [Path to your solution(*.sln)] /t:Build /p:Configuration=Release /p:TargetFramework=v4.0
 }
 
-function dargonBuild_restoreNugetPackages() {
+function _dargonBuild_restoreNugetPackages() {
    if [ -f "NuGet.Config" ]
    then
       eval "nuget restore"
@@ -381,7 +381,7 @@ function dargonBuild_restoreNugetPackages() {
       echo "WARNING: Reached root directory but did not find NuGet.Config!";
    else   
       pushd .. > /dev/null;
-      dargonBuild_restoreNugetPackages;
+      _dargonBuild_restoreNugetPackages;
       popd > /dev/null;
    fi
 }
