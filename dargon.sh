@@ -44,29 +44,29 @@ function dargonUtilitiesUpdate() {
 
 function dargonSetupEnvironment() {
    command -v ruby >/dev/null 2>&1 || {
-      dargonSetupEnvironment_installRuby;
+      _dargonSetupEnvironment_installRuby;
    };
    command -v hub >/dev/null 2>&1 || {
-      dargonSetupEnvironment_installHub;
+      _dargonSetupEnvironment_installHub;
    };
    command -v nuget >/dev/null 2>&1 || {
-      dargonSetupEnvironment_installNuget;
+      _dargonSetupEnvironment_installNuget;
    };
    
    __updateDockerEverything;
    if [ ! $is_docker_installed ]
    then
-      dargonSetupEnvironment_installDocker;
+      _dargonSetupEnvironment_installDocker;
    else 
       echo "DOCKER IS ALREADY INSTALLED";
    fi
-   dargonSetupEnvironment_pullRepositories;
+   _dargonSetupEnvironment_pullRepositories;
    dargonNugetPackageRestore;
    dargonStartWyvern;
    echo "TODO";
 }
 
-function dargonSetupEnvironment_installRuby() {
+function _dargonSetupEnvironment_installRuby() {
    echo "Installing Ruby $DARGON_RUBY_VERSION!";
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    local ruby_installer_name="ruby_installer_$DARGON_RUBY_VERSION.exe"
@@ -84,7 +84,7 @@ function dargonSetupEnvironment_installRuby() {
    echo "Done installing Ruby!";
 }
 
-function dargonSetupEnvironment_installHub() {
+function _dargonSetupEnvironment_installHub() {
    echo "Installing Hub!";
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    if [ ! -e hub ]
@@ -98,7 +98,7 @@ function dargonSetupEnvironment_installHub() {
    echo "Done installing Hub!";
 }
 
-function dargonSetupEnvironment_installNuget() {
+function _dargonSetupEnvironment_installNuget() {
    echo "Installing Nuget!";
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    local nuget_executable_name="nuget.exe"
@@ -109,7 +109,7 @@ function dargonSetupEnvironment_installNuget() {
    __updateNugetEverything;
 }
 
-function dargonSetupEnvironment_installDargonManagementInterface() {
+function _dargonSetupEnvironment_installDargonManagementInterface() {
    echo "Installing Dargon Management Interface (dmi)!";
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    local dmi_executable_name="dmi.exe"
@@ -122,7 +122,7 @@ function dargonSetupEnvironment_installDargonManagementInterface() {
    __updateDargonManagementInterfaceEverything;
 }
 
-function dargonSetupEnvironment_installBoot2Docker() {
+function _dargonSetupEnvironment_installBoot2Docker() {
    echo "Installing Boot2Docker!";
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    local b2d_installer_name="b2d_installer_$BOOT2DOCKER_VERSION.exe"
@@ -139,7 +139,7 @@ function dargonSetupEnvironment_installBoot2Docker() {
    __updateVirtualBoxEverything;
 }
 
-function dargonSetupEnvironment_pullRepositories() {
+function _dargonSetupEnvironment_pullRepositories() {
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    echo "Pulling Dargon source code..."
    for i in "${DARGON_REPOSITORY_NAMES[@]}"
@@ -157,7 +157,7 @@ function dargonSetupEnvironment_pullRepositories() {
    popd > /dev/null
 }
 
-function dargonSetupEnvironment_pullAndForkRepositories() {
+function _dargonSetupEnvironment_pullAndForkRepositories() {
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    echo "Pulling and forking Dargon source code..."
    for i in "${DARGON_REPOSITORY_NAMES[@]}"
@@ -198,7 +198,7 @@ function dargonSetupEnvironment_pullAndForkRepositories() {
    popd > /dev/null
 }
 
-function dargonSetupEnvironment_setupAggregateRepository() {
+function _dargonSetupEnvironment_setupAggregateRepository() {
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    echo "Setting up dargon-aggregate repository..."
    
@@ -230,7 +230,7 @@ function dargonNugetPackageRestore() {
    do
       pushd "$DARGON_REPOSITORIES_DIR/$i" > /dev/null;
       echo -n -e "$COLOR_LIME$i: $COLOR_NONE";
-      eval "nuget restore";
+      _dargonBuild_restoreNugetPackages;
       popd > /dev/null;      
    done
    popd > /dev/null
@@ -312,67 +312,89 @@ function dargonNukeVirtualMachines() {
 }
 
 function dargonBuild() {
-   dargonBuildNestDaemon;
-   dargonBuildNestHost;
-   dargonBuildNestExampleEgg;
-   dargonBuildNestRunnerEgg;
-   dargonBuildCoreDaemon;
-   dargonBuildDargonManager;
+   _dargonBuildNestDaemon;
+   _dargonBuildNestHost;
+   _dargonBuildNestExampleEgg;
+   _dargonBuildNestRunnerEgg;
+   _dargonBuildCoreDaemon;
+   _dargonBuildDargonManager;
 }
 
-function dargonBuildNestDaemon() {
-   dargonBuildEgg "nestd" "Dargon.Nest/nestd" "nestd.csproj";
+function _dargonBuildNestDaemon() {
+   _dargonBuildEgg "nestd" "Dargon.Nest/nestd" "nestd.csproj";
 }
 
-function dargonBuildNestHost() {
-   dargonBuildEgg "nest-host" "Dargon.Nest/nest-host" "nest-host.csproj";
+function _dargonBuildNestHost() {
+   _dargonBuildEgg "nest-host" "Dargon.Nest/nest-host" "nest-host.csproj";
 }
 
-function dargonBuildNestExampleEgg() {
-   dargonBuildEgg "dev-egg-example" "Dargon.Nest/dev-egg-example" "dev-egg-example.csproj";
+function _dargonBuildNestExampleEgg() {
+   _dargonBuildEgg "dev-egg-example" "Dargon.Nest/dev-egg-example" "dev-egg-example.csproj";
 }
 
-function dargonBuildNestRunnerEgg() {
-   dargonBuildEgg "dev-egg-runner" "Dargon.Nest/dev-egg-runner" "dev-egg-runner.csproj";
+function _dargonBuildNestRunnerEgg() {
+   _dargonBuildEgg "dev-egg-runner" "Dargon.Nest/dev-egg-runner" "dev-egg-runner.csproj";
 }
 
-function dargonBuildCoreDaemon() {
-   dargonBuildEgg "cored" "the-dargon-project/daemon-impl" "daemon-impl.csproj";
+function _dargonBuildCoreDaemon() {
+   _dargonBuildEgg "cored" "the-dargon-project/daemon-impl" "daemon-impl.csproj";
 }
 
-function dargonBuildDargonManager() {
-   dargonBuildEgg "dargon-manager" "the-dargon-project/dargon-manager" "dargon-manager.csproj";
+function _dargonBuildDargonManager() {
+   _dargonBuildEgg "dargon-manager" "the-dargon-project/dargon-manager" "dargon-manager.csproj";
 }
 
-function dargonBuildEgg() {
+function _dargonBuildEgg() {   
    local eggName=$1;
    local projectDirPath=$2;
    local projectFileName=$3;
    
+   if [[ -z "$eggName" ]]; then
+      echo "Empty eggName";
+      return 1;
+   fi
+   if [[ -z "$projectDirPath" ]]; then
+      echo "Empty projectDirPath";
+      return 1;
+   fi
+   if [[ -z "$projectFileName" ]]; then
+      echo "Empty projectFileName";
+      return 1;
+   fi
+   
+   echo -e "== $COLOR_LIME$eggName$COLOR_NONE =="
    __updateNugetEverything;
    __updateMsbuildEverything;
    __updateDargonNestEverything;
    
    pushd "$DARGON_REPOSITORIES_DIR/$projectDirPath" > /dev/null;
-   
-   echo -e "== $COLOR_LIME$eggName$COLOR_NONE =="
-   echo -e "${COLOR_CYAN}Restoring Packages:${COLOR_NONE}"
-   dargonBuild_restoreNugetPackages;
-   echo -e ""
-   
-   echo -e "${COLOR_CYAN}Build Project:${COLOR_NONE}"
-   eval "msbuild /target:Build /property:Configuration=Release /property:OutDir=./bin/temp/ /verbosity:m '$projectFileName'";
-   echo -e ""
-   
-   echo -e "${COLOR_CYAN}Create Egg:${COLOR_NONE}"
-   eval "nest --nest-path=$NEST_DIR create-egg '$eggName' 'dev' './bin/temp/'";
-   
-   popd > /dev/null;
+   if [ $? -ne 0 ]; then
+      echo "Failed to cd to $DARGON_REPOSITORIES_DIR/$projectDirPath";
+      return 1;
+   else      
+      echo -e "${COLOR_CYAN}Restoring Packages:${COLOR_NONE}"
+      _dargonBuild_restoreNugetPackages;
+      echo -e ""
+      
+      echo -e "${COLOR_CYAN}Build Project:${COLOR_NONE}"
+      eval "msbuild /target:Build /property:Configuration=Debug /property:OutDir=./bin/temp/ /verbosity:m '$projectFileName'";
+      echo -e ""
+      
+      echo -e "${COLOR_CYAN}Cleaning Egg Directory:${COLOR_NONE}";
+      eval "rm -rf $NEST_DIR/$eggName/*";
+      echo -e "done";
+      echo -e "";
+      
+      echo -e "${COLOR_CYAN}Create Egg:${COLOR_NONE}"
+      eval "nest --nest-path=$NEST_DIR create-egg '$eggName' 'dev' './bin/temp/'";
+      
+      popd > /dev/null;
+   fi
    
 # MsBuild.exe [Path to your solution(*.sln)] /t:Build /p:Configuration=Release /p:TargetFramework=v4.0
 }
 
-function dargonBuild_restoreNugetPackages() {
+function _dargonBuild_restoreNugetPackages() {
    if [ -f "NuGet.Config" ]
    then
       eval "nuget restore"
@@ -381,7 +403,7 @@ function dargonBuild_restoreNugetPackages() {
       echo "WARNING: Reached root directory but did not find NuGet.Config!";
    else   
       pushd .. > /dev/null;
-      dargonBuild_restoreNugetPackages;
+      _dargonBuild_restoreNugetPackages;
       popd > /dev/null;
    fi
 }
@@ -411,6 +433,10 @@ function dargonDown() {
    else 
       eval "b2d $DARGON_DOCKER_ARGS stop";
    fi
+}
+
+function dargonListNestProcesses() {
+   WMIC PROCESS get ProcessId,CommandLine /format:csv | grep nest | cut -d ',' -f 2-;
 }
 
 function dargonStartPlatform() {
