@@ -318,6 +318,7 @@ function dargonBuild() {
    _dargonBuildNestRunnerEgg;
    _dargonBuildCoreDaemon;
    _dargonBuildDargonManager;
+   _dargonBuildCli;
 }
 
 function _dargonBuildNestDaemon() {
@@ -342,6 +343,10 @@ function _dargonBuildCoreDaemon() {
 
 function _dargonBuildDargonManager() {
    _dargonBuildEgg "dargon-manager" "the-dargon-project/dargon-manager" "dargon-manager.csproj";
+}
+
+function _dargonBuildCli() {
+   _dargonBuildEgg "dargon-cli" "the-dargon-project/dargon-cli" "dargon-cli.csproj";
 }
 
 function _dargonBuildEgg() {   
@@ -406,6 +411,38 @@ function _dargonBuild_restoreNugetPackages() {
       _dargonBuild_restoreNugetPackages;
       popd > /dev/null;
    fi
+}
+
+function dargonStartClient() {
+   _dargonStartNestD;
+   sleep 1;
+   _dargonStartCoreD;
+   sleep 1;
+   _dargonStartManager;
+}
+
+function dargonStartCli() {
+   _dargonStartNestD;
+   sleep 1;
+   _dargonStartCoreD;
+   sleep 1;
+   _dargonStartCli;
+}
+
+function _dargonStartNestD() {
+   eval "$NEST_DIR/nestd/nestd.exe &";
+}
+
+function _dargonStartCoreD() {
+   eval "$NEST_DIR/dev-egg-runner/dev-egg-runner.exe -e cored -n cored &";
+}
+
+function _dargonStartManager() {
+   eval "$NEST_DIR/dev-egg-runner/dev-egg-runner.exe -e dargon-manager -n dargon-manager &";
+}
+
+function _dargonStartCli() {
+   eval "$NEST_DIR/dargon-cli/dargon-cli.exe";
 }
 
 function dargonUp() {
