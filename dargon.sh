@@ -275,6 +275,34 @@ function dargonPullUpstream() {
    popd > /dev/null
 }
 
+function dargonDiffOrigin() {
+   pushd $DARGON_REPOSITORIES_DIR > /dev/null;
+   echo "Comparing Dargon local repositories to origin..."
+   for i in "${DARGON_REPOSITORY_NAMES[@]}"
+   do
+      pushd "$DARGON_REPOSITORIES_DIR/$i" > /dev/null;
+      echo -n -e "$COLOR_LIME$i: $COLOR_NONE";
+      git --no-pager diff origin;
+      popd > /dev/null;
+      echo "";
+   done
+   popd > /dev/null
+}
+
+function dargonDiffUpstream() {
+   pushd $DARGON_REPOSITORIES_DIR > /dev/null;
+   echo "Comparing Dargon local repositories to upstream..."
+   for i in "${DARGON_REPOSITORY_NAMES[@]}"
+   do
+      pushd "$DARGON_REPOSITORIES_DIR/$i" > /dev/null;
+      echo -n -e "$COLOR_LIME$i: $COLOR_NONE";
+      git --no-pager diff upstream;
+      popd > /dev/null;
+      echo "";
+   done
+   popd > /dev/null
+}
+
 function dargonStatus() {
    pushd $DARGON_REPOSITORIES_DIR > /dev/null;
    echo "Getting Dargon local repository statuses..."
