@@ -441,6 +441,12 @@ function _dargonBuild_restoreNugetPackages() {
    fi
 }
 
+function dargonStartNestAndCore() {
+   _dargonStartNestD;
+   sleep 1;
+   _dargonStartCoreD;
+}
+
 function dargonStartClient() {
    _dargonStartNestD;
    sleep 1;
