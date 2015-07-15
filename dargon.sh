@@ -363,6 +363,8 @@ function dargonBuild() {
    _dargonBuildCoreDaemon;
    _dargonBuildDargonManager;
    _dargonBuildCli;
+   _dargonBuildTrinket;
+   _dargonBuildTrinketDim;
 }
 
 function _dargonBuildNestDaemon() {
@@ -393,6 +395,13 @@ function _dargonBuildCli() {
    _dargonBuildEgg "dargon-cli" "the-dargon-project/dargon-cli" "dargon-cli.csproj";
 }
 
+function _dargonBuildTrinket() {
+   _dargonBuildEgg "trinket" "the-dargon-project/trinket-proxy-impl" "trinket-proxy-impl.csproj";
+}
+
+function _dargonBuildTrinketDim() {
+   _dargonBuildEgg "trinket-dim" "the-dargon-project/DargonInjectedModule" "Dargon - Injected Module.vcxproj";
+}
 function _dargonBuildEgg() {   
    local eggName=$1;
    local projectDirPath=$2;
