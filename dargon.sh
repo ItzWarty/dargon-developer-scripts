@@ -426,7 +426,7 @@ function _dargonBuildEgg() {
       echo -e ""
       
       echo -e "${COLOR_CYAN}Build Project:${COLOR_NONE}"
-      eval "msbuild /target:Build /property:Configuration=Debug /property:OutDir=./bin/temp/ /verbosity:m '$projectFileName'";
+      eval "msbuild /target:Clean,Build /property:Configuration=Debug /property:OutDir=./bin/temp/ /verbosity:m '$projectFileName'";
       echo -e ""
       
       echo -e "${COLOR_CYAN}Cleaning Egg Directory:${COLOR_NONE}";
