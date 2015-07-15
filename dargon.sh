@@ -53,6 +53,9 @@ function dargonSetupEnvironment() {
       _dargonSetupEnvironment_installNuget;
    };
    
+   _dargonSetupEnvironment_installDargonManagementInterface;
+   _dargonSetupEnvironment_installNest;
+   
    __updateDockerEverything;
    if [ ! $is_docker_installed ]
    then
@@ -120,6 +123,19 @@ function _dargonSetupEnvironment_installDargonManagementInterface() {
    popd > /dev/null;
    
    __updateDargonManagementInterfaceEverything;
+}
+
+function _dargonSetupEnvironment_installNest() {
+   echo "Installing Dargon Nest Command-Line Tool (nest)!";
+   pushd $DARGON_REPOSITORIES_DIR > /dev/null;
+   local nest_executable_name="nest.exe"
+   local nest_executable_path="$DARGON_UTILITIES_TEMP_DIR/$nest_executable_name";
+   local nest_url=`curl -s https://api.github.com/repos/the-dargon-project/Dargon.Nest/releases | grep browser_download_url | head -n 1 | cut -d '"' -f 4`;
+   echo "Nest Url: $nest_url";
+   curl -L -o $nest_executable_path -O "$nest_url";
+   popd > /dev/null;
+   
+   __updateDargonNestEverything;
 }
 
 function _dargonSetupEnvironment_installBoot2Docker() {
