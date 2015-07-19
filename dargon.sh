@@ -551,6 +551,14 @@ function scpDargonDirectory() {
    scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ~/.ssh/id_boot2docker -P $DARGON_DOCKER_SSH_PORT -r $1 docker@127.0.0.1:$2
 }
 
+function pushdRepos() {
+   pushd $DARGON_REPOSITORIES_DIR;
+}
+
+function pushdCore() {
+   pushd "$DARGON_REPOSITORIES_DIR/the-dargon-project";
+}
+
 function __updateDockerEverything() {
    __updateDockerGlobals
    if [ $is_docker_installed ]
