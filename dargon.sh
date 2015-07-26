@@ -388,6 +388,11 @@ function _dargonBuildNestSpawner() {
    mv "filelist_temp" "filelist";
    popd > /dev/null;
 }
+
+function _dargonBuildNestCli() {
+   _dargonBuildEgg "nest" "Dargon.Nest/nest" "nest.csproj";
+}
+
 function _dargonBuildNestDaemon() {
    _dargonBuildEgg "nestd" "Dargon.Nest/nestd" "nestd.csproj";
 }
@@ -507,6 +512,11 @@ function dargonStartCli() {
    _dargonStartCoreD;
    sleep 1;
    _dargonStartCli;
+}
+
+function _dargonStartNestCli() {
+   cd $NEST_DIR;
+   eval "$NEST_DIR/nest/nest.exe";
 }
 
 function _dargonStartNestSpawner() {
