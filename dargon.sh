@@ -413,8 +413,8 @@ function _dargonBuildCoreDaemon() {
    _dargonBuildEgg "cored" "the-dargon-project/daemon-impl" "daemon-impl.csproj";
 }
 
-function _dargonBuildDargonManager() {
-   _dargonBuildEgg "dargon-manager" "the-dargon-project/dargon-manager" "dargon-manager.csproj";
+function _dargonBuildClient() {
+   _dargonBuildEgg "dargon-client" "the-dargon-project/dargon-client" "dargon-client.csproj";
 }
 
 function _dargonBuildCli() {
@@ -498,12 +498,12 @@ function dargonStartNestAndCore() {
    _dargonStartCoreD;
 }
 
-function dargonStartClient() {
+function dargonStartFullClient() {
    _dargonStartNestD;
    sleep 1;
    _dargonStartCoreD;
    sleep 1;
-   _dargonStartManager;
+   _dargonStartClient;
 }
 
 function dargonStartCli() {
@@ -531,8 +531,8 @@ function _dargonStartCoreD() {
    eval "$NEST_DIR/dev-egg-runner/dev-egg-runner.exe -e cored -n cored &";
 }
 
-function _dargonStartManager() {
-   eval "$NEST_DIR/dev-egg-runner/dev-egg-runner.exe -e dargon-manager -n dargon-manager &";
+function _dargonStartClient() {
+   eval "$NEST_DIR/dev-egg-runner/dev-egg-runner.exe -e dargon-client -n dargon-client &";
 }
 
 function _dargonStartCli() {
