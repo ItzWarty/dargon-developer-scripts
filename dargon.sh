@@ -367,6 +367,27 @@ function dargonBuild() {
    _dargonBuildTrinketDim;
 }
 
+function _dargonBuildNestSpawner() {
+   _dargonBuildEgg "nest-spawner" "Dargon.Nest/nest-spawner" "nest-spawner.csproj";
+   
+   mkdir "$NEST_DIR/nest-spawner/merged";
+   
+   local WINDOWS_NEST_DIR="$(echo $NEST_DIR | sed -e 's/^\///' -e 's/\//\\/g' -e 's/^./\0:/')";
+   cmd <<< "\"C:/Program Files (x86)/Microsoft/ILMerge/ILMerge.exe\" \"$WINDOWS_NEST_DIR/nest-spawner/nest-spawner.exe\" \"$WINDOWS_NEST_DIR/nest-spawner/*.dll\" /targetplatform:v4 /out:$WINDOWS_NEST_DIR/nest-spawner/merged/nest-spawner.exe /wildcards /lib:\"C:\Windows\Microsoft.NET\Framework64\v4.0.30319\WPF\"";
+   
+   echo "Cleaning up nest-spawner directory...";
+   pushd "$NEST_DIR/nest-spawner" > /dev/null;
+   rm *.pdb;
+   rm *.dll;
+   rm *.exe;
+   rm *.config;
+   mv merged/* .;
+   rmdir merged;
+   cat "filelist" | grep "nest-spawner.exe$" | tr -d '\n' > "filelist_temp";
+   rm filelist;
+   mv "filelist_temp" "filelist";
+   popd > /dev/null;
+}
 function _dargonBuildNestDaemon() {
    _dargonBuildEgg "nestd" "Dargon.Nest/nestd" "nestd.csproj";
 }
@@ -486,6 +507,10 @@ function dargonStartCli() {
    _dargonStartCoreD;
    sleep 1;
    _dargonStartCli;
+}
+
+function _dargonStartNestSpawner() {
+   eval "$NEST_DIR/nest-spawner/nest-spawner.exe &";
 }
 
 function _dargonStartNestD() {
