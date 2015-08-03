@@ -428,6 +428,10 @@ function _dargonBuildTrinket() {
 function _dargonBuildTrinketDim() {
    _dargonBuildEgg "trinket-dim" "the-dargon-project/DargonInjectedModule" "Dargon - Injected Module.vcxproj";
 }
+function _dargonBuildThumbnailGenerator() {
+   _dargonBuildEgg "thumbnail-generator" "the-dargon-project/thumbnail-generator" "thumbnail-generator.csproj";
+}
+
 function _dargonBuildEgg() {   
    local eggName=$1;
    local projectDirPath=$2;
@@ -537,6 +541,10 @@ function _dargonStartClient() {
 
 function _dargonStartCli() {
    eval "$NEST_DIR/dargon-cli/dargon-cli.exe";
+}
+
+function _dargonStartThumbnailGenerator() {
+   eval "$NEST_DIR/dev-egg-runner/dev-egg-runner.exe -e thumbnail-generator -n thumbnail-generator &";
 }
 
 function dargonUp() {
