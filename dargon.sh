@@ -555,7 +555,7 @@ function _dargonStartThumbnailGenerator() {
 function dargonStartHydarExample() {
    local path="$NEST_DIR/dev-hydar-example/dev-hydar-example.exe";
    # cmd <<< "\"$CONEMU_PATH\" /title dev-hydar-example /cmdlist \"bash -c \"$path\" -cur_console:f ||| bash -c \"$path\" -cur_console:s1TH"
-   cmd <<< "\"$CONEMU_PATH\" /title dev-hydar-example /cmdlist \"bash -c \"$path\" -cur_console:fc ||| bash -c \"$path\" -cur_console:s1TVc ||| bash -c \"$path\" -cur_console:s1THc ||| bash -c 'echo sleeping... && sleep 5 && $path' -cur_console:s2THc"
+   cmd <<< "\"$CONEMU_PATH\" /title dev-hydar-example /cmdlist \"bash -c \"$path -s 32001 -m 32101\" -cur_console:fc ||| bash -c \"$path -s 32002 -m 32102\" -cur_console:s1TVc ||| bash -c \"$path -s 32003 -m 32103\" -cur_console:s1THc ||| bash -c 'echo sleeping... && sleep 5 && $path -s 32004 -m 32104' -cur_console:s2THc"
    #cmd <<< "\"$CONEMU_PATH\" /title platform-hydar /cmdlist \"cmd /c $path -cur_console:f ||| cmd /c $path -cur_console:s1TV ||| cmd /c dir -cur_console:s1TH ||| cmd /c dir -cur_console:s2TH"
 }
 
@@ -695,7 +695,7 @@ function __updateNuSpecGenEverything() {
 
 function __updateConemuEverything() {
    alias conemu="'$CONEMU_PATH'";
-   # cmd <<< "\"$CONEMU_PATH\" /title platform-hydar /cmdlist \"cmd /c dir -cur_console:f ||| cmd /c dir -cur_console:s1TV ||| cmd /c dir -cur_console:s1TH ||| cmd /c dir -cur_console:s2TH"
+   # cmd <<< "\"$CONEMU_PATH\" /title platform-hydar /cmdlist \"cmd /c dir -cur_console:f ||| cmd /c dir -cur_console:s1TV ||| cmd /c dir -cur_console:s1TH ||| cmd /c dir -cur_console:s2TH"
 }
 
 __updateDockerEverything;
