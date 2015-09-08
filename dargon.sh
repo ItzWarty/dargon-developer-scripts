@@ -590,8 +590,37 @@ function dargonListNestProcesses() {
    WMIC PROCESS get ProcessId,CommandLine /format:csv | grep nest | cut -d ',' -f 2-;
 }
 
-function dargonStartPlatform() {
+function platformStart() {
    echo "Not Implemented";
+}
+
+function platformMigrate {
+   __updateNugetEverything;
+   __updateMsbuildEverything;
+   
+   echo -e "== ${COLOR_LIME}Platform Migrate:${COLOR_NONE} ==";
+   pushd "$DARGON_REPOSITORIES_DIR/Dargon.Hydar" > /dev/null;
+   
+   echo -e "${COLOR_CYAN}Updating NuGet Packages:${COLOR_NONE}";
+   _dargonBuild_restoreNugetPackages;
+   echo -e ""
+   
+   echo -e "${COLOR_CYAN}Building platform-migrations:${COLOR_NONE}";
+   pushd "platform-migrations" > /dev/null;
+   eval "msbuild /target:Clean,Build /property:Configuration=Debug /property:OutDir=./bin/temp/ /verbosity:m";
+   popd > /dev/null;
+   echo -e ""
+      
+   echo -e "${COLOR_CYAN}Running Migrations:${COLOR_NONE}";
+   "./packages/FluentMigrator.Tools.1.6.0/tools/x86/40/Migrate.exe" --connectionString "Server=127.0.0.1;Port=5432;Database=dargon;User Id=dargon_migrations;Password=dargon;" --db=Postgres --target="platform-migrations/bin/temp/platform-migrations.dll" "$@";
+   echo -e ""
+   
+   echo -e "${COLOR_CYAN}Done.${COLOR_NONE}";
+   popd > /dev/null;
+}
+
+function platformMigrateRollbackAll {
+   dargonPlatformMigrate --task "rollback:all";
 }
 
 function sshDargon() {
