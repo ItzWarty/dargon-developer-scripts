@@ -533,7 +533,7 @@ function _dargonStartNestSpawner() {
 }
 
 function _dargonStartNestD() {
-   eval "$NEST_DIR/nestd/nestd.exe &";
+   eval "$NEST_DIR/nestd/nestd.exe $@ &";
 }
 
 function _dargonStartCoreD() {
@@ -591,7 +591,43 @@ function dargonListNestProcesses() {
 }
 
 function platformStart() {
-   echo "Not Implemented";
+   _dargonStartNestD -p 31337;
+   sleep 1;
+   _platformStartZilean;
+   sleep 1;
+   _platformStartCore;
+   sleep 1;
+   _platformStartWebend;
+}
+
+function _platformStartZilean() {
+   eval "$NEST_DIR/dev-egg-runner/dev-egg-runner.exe -e zileand -n zileand -p 31337 &";
+}
+
+function _platformStartCore() {
+   eval "$NEST_DIR/dev-egg-runner/dev-egg-runner.exe -e platformd -n platformd -p 31337 &";
+}
+
+function _platformStartWebend() {
+   eval "$NEST_DIR/dev-egg-runner/dev-egg-runner.exe -e webendd -n webendd -p 31337 &";
+}
+
+function platformBuild() {
+   _platformBuildZilean;
+   _platformBuildCore;
+   _platformBuildWebend;
+}
+
+function _platformBuildZilean() {
+   _dargonBuildEgg "zileand" "Dargon.Zilean/zileand" "zileand.csproj";
+}
+
+function _platformBuildCore() {
+   _dargonBuildEgg "platformd" "Dargon.Hydar/platform" "platform.csproj";
+}
+
+function _platformBuildWebend() {
+   _dargonBuildEgg "webendd" "Dargon.Hydar/webend" "webend.csproj";
 }
 
 function platformMigrate {
@@ -620,7 +656,7 @@ function platformMigrate {
 }
 
 function platformMigrateRollbackAll {
-   dargonPlatformMigrate --task "rollback:all";
+   platformMigrate --task "rollback:all";
 }
 
 function sshDargon() {
