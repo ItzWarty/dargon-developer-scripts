@@ -3,10 +3,11 @@ PLATFORM_NESTD_MANAGEMENT_PORT=31000;
 
 function pushdPlatform()    { pushd "$DARGON_REPOSITORIES_DIR/Dargon.Hydar"; }
 
-function platformBuild()         { _dargonBuildAll "Dargon Platform" _platformBuild; }
-function platformStart()         { _dargonStart _platformMigrate _platformStartNestD _platformStartZilean _platformStartCore _platformStartWebend; }
-function platformKill()          { _nestKill -p $PLATFORM_NEST_PORT; }
+function platformBuild()         { _platformTryKill && _dargonBuildAll "Dargon Platform" _platformBuild; }
+function platformStart()         { _platformTryKill && _dargonStart _platformMigrate _platformStartNestD _platformStartZilean _platformStartCore _platformStartWebend; }
+function platformKill()          { _nestKill -p $PLATFORM_NEST_PORT $@; }
 
+function _platformTryKill()      { _nestTryKill -p $PLATFORM_NEST_PORT $@; }
 function _platformStartNestD()   { _nestStartDaemon -p $PLATFORM_NEST_PORT -m $PLATFORM_NESTD_MANAGEMENT_PORT $@; }
 function _platformStartEgg()     { _nestStartEgg -p $PLATFORM_NEST_PORT -e $1; }
 function _platformStartZilean()  { _platformStartEgg "zileand"; }

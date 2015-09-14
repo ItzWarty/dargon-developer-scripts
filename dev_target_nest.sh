@@ -12,3 +12,10 @@ function _nestStartDaemon()      { shellExecute "$(toWindowsPath $NEST_DIR/nestd
 function _nestStartEgg()         { "$NEST_DIR/dev-nest-commander/dev-nest-commander.exe" -c spawn-egg $@; }
 function _nestKill()             { "$NEST_DIR/dev-nest-commander/dev-nest-commander.exe" -c kill-nest $@; }
 function _nestStartCli()         { cd $NEST_DIR && "$NEST_DIR/nest/nest.exe"; }
+
+function _nestTryKill() {
+   echo -e "==${COLOR_LIME} TryKill nestd $@ ${COLOR_NONE}=="
+   echo "A time-out indicates nestd was not running.";
+   _nestKill $@ -t 500;
+   echo "";
+}

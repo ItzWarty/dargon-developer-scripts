@@ -3,12 +3,13 @@ CLIENT_NESTD_MANAGEMENT_PORT=21000;
 
 function pushdCore()    { pushd "$DARGON_REPOSITORIES_DIR/the-dargon-project"; }
 
-function clientBuild()           { _dargonBuildAll "Dargon Client" _clientBuild; }
-function clientStartHeadless()   { _dargonStart _clientStartNestD _clientStartCoreD; }
-function clientStartWithGui()    { _dargonStart clientStartHeadless _clientStartManager; }
-function clientStartWithCli()    { _dargonStart clientStartHeadless _clientStartCli; }
+function clientBuild()           { _clientTryKill; _dargonBuildAll "Dargon Client" _clientBuild; }
+function clientStartHeadless()   { _clientTryKill; _dargonStart _clientStartNestD _clientStartCoreD; }
+function clientStartWithGui()    { _clientTryKill; _dargonStart clientStartHeadless _clientStartManager; }
+function clientStartWithCli()    { _clientTryKill; _dargonStart clientStartHeadless _clientStartCli; }
 function clientKill()            { _nestKill -p $CLIENT_NEST_PORT; }
 
+function _clientTryKill()        { _nestTryKill -p $CLIENT_NEST_PORT $@; }
 function _clientStartNestD()     { _nestStartDaemon -p $CLIENT_NEST_PORT -m $CLIENT_NESTD_MANAGEMENT_PORT $@; }
 function _clientStartEgg()       { _nestStartEgg -p $CLIENT_NEST_PORT -e $1 ; }
 function _clientStartCoreD()     { _clientStartEgg "cored"; }
