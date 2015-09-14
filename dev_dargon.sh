@@ -77,19 +77,20 @@ function dargonNukeVirtualMachines() {
 
 function _dargonBuildAll() {
    echo "Building $1 with commands $2*";
-   echo "";
-   
-   compgen -A function | grep "^$2" | while read -r commandName ; do
-      ($commandName ${*:3}) || local failed=1;
-      echo "";
       
-      if [[ $failed ]]; then 
-         echo -e "${COLOR_RED}Build Failed.${COLOR_NONE}";
-         return 1;
-      fi
+   compgen -A function | grep "^$2" | while read -r commandName ; do
+      echo "";
+      ($commandName ${*:3}) || return 1;
    done
    
-   echo -e "${COLOR_LIME}Build Succeeded.${COLOR_NONE}";
+   local failed=$?;
+   
+   echo "";
+   if [[ $failed -gt 0 ]]; then
+      echo -e "${COLOR_RED}Build Failed.${COLOR_NONE}";
+   else
+      echo -e "${COLOR_LIME}Build Succeeded.${COLOR_NONE}";
+   fi
 }
 
 function _dargonBuildEgg() {
