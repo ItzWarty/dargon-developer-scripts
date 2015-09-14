@@ -9,6 +9,6 @@ function _nestBuildCommander()   { _dargonBuildEgg "dev-nest-commander" "Dargon.
 
 function _nestStartSpawner()     { ("$NEST_DIR/nest-spawner/nest-spawner.exe"); }
 function _nestStartDaemon()      { shellExecute "$(toWindowsPath $NEST_DIR/nestd/nestd.exe)" $@; }
-function _nestStartEgg()         { ("$NEST_DIR/dev-nest-commander/dev-nest-commander.exe" -c spawn-egg $@ &); }
-function _nestKill()             { ("$NEST_DIR/dev-nest-commander/dev-nest-commander.exe" -c kill-nest $@ &); }
+function _nestStartEgg()         { "$NEST_DIR/dev-nest-commander/dev-nest-commander.exe" -c spawn-egg $@; }
+function _nestKill()             { "$NEST_DIR/dev-nest-commander/dev-nest-commander.exe" -c kill-nest $@; }
 function _nestStartCli()         { cd $NEST_DIR && "$NEST_DIR/nest/nest.exe"; }
