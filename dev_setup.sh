@@ -47,7 +47,7 @@ function _dargonSetupEnvironment_installRuby() {
    
    # add ruby to path 
    source ~/.bashrc; 
-   export PATH="$RUBY_DIR/bin:$PATH"
+   __updateRubyEverything;
    echo "Done installing Ruby!";
 }
 
@@ -222,6 +222,12 @@ function __updateDockerGlobals() {
    fi
 }
 
+function __updateRubyEverything() {
+   if [ -d $RUBY_DIR ]; then
+      export PATH="$RUBY_DIR/bin:$PATH";
+   fi
+}
+
 function __updateNugetEverything() {
    local path="$DARGON_UTILITIES_TEMP_DIR/nuget.exe";
    if [ -e "$path" ]
@@ -286,6 +292,7 @@ function __updateConemuEverything() {
 }
 
 __updateDockerEverything;
+__updateRubyEverything;
 __updateNugetEverything;
 __updateDargonManagementInterfaceEverything;
 __updateDargonNestEverything;

@@ -12,6 +12,10 @@ function dargonUtilitiesUpdate() {
    popd > /dev/null;
 }
 
+function dargonUtilitiesReload() {
+   . ~/.bashrc;
+}
+
 #
 # Iterates through all repositories and runs the given command.
 # Arguments:
@@ -27,18 +31,18 @@ function dargonForeach() {
       pushd "$DARGON_REPOSITORIES_DIR/$i" > /dev/null;
       echo -n -e "$COLOR_LIME$i: $COLOR_NONE";
       ${*:2};
-      popd > /dev/null;      
+      popd > /dev/null;
    done
    popd > /dev/null
 }
 
 function dargonNugetPackageRestore() {
    __updateNugetEverything;
-   
+
    dargonForeach "Restoring NuGet packages..." _dargonBuild_restoreNugetPackages;
 }
 
-# 
+#
 # Runs git pull [args] for each repo.
 # Arguments:
 #    ... - Additional arguments for git.
@@ -67,24 +71,24 @@ function dargonFsck() { dargonForeach "Running Git Filesystem Consistency Check 
 
 function dargonNukeVirtualMachines() {
    __updateDockerEverything;
-   if [ ! $is_docker_installed ] 
+   if [ ! $is_docker_installed ]
    then
       echo "ERROR: Docker is not installed!";
-   else 
+   else
       eval "b2d $DARGON_DOCKER_ARGS destroy";
    fi
 }
 
 function _dargonBuildAll() {
    echo "Building $1 with commands $2*";
-      
+
    compgen -A function | grep "^$2" | while read -r commandName ; do
       echo "";
       ($commandName ${*:3}) || return 1;
    done
-   
+
    local failed=$?;
-   
+
    echo "";
    if [[ $failed -gt 0 ]]; then
       echo -e "${COLOR_RED}Build Failed.${COLOR_NONE}";
@@ -97,7 +101,7 @@ function _dargonBuildEgg() {
    local eggName=$1;
    local projectDirPath=$2;
    local projectFileName=$3;
-   
+
    if [[ -z "$eggName" ]]; then
       echo "Empty eggName";
       return 1;
@@ -108,33 +112,33 @@ function _dargonBuildEgg() {
       echo "Empty projectFileName";
       return 1;
    fi
-   
+
    echo -e "== $COLOR_LIME$eggName$COLOR_NONE =="
-   
+
    __updateNugetEverything;
    __updateMsbuildEverything;
    __updateDargonNestEverything;
-   
+
    pushd "$DARGON_REPOSITORIES_DIR/$projectDirPath" > /dev/null;
    if [ $? -ne 0 ]; then
       echo "Failed to cd to $DARGON_REPOSITORIES_DIR/$projectDirPath";
       return 1;
-   else      
+   else
       echo -e "${COLOR_CYAN}Restoring Packages:${COLOR_NONE}"
       _dargonBuild_restoreNugetPackages || return 1;
       echo -e ""
-      
+
       echo -e "${COLOR_CYAN}Build Project:${COLOR_NONE}"
       msbuild /target:Clean,Build /property:Configuration=Debug /property:OutDir=./bin/temp/ /verbosity:m "$projectFileName" || return 1;
       echo -e ""
-      
+
       echo -e "${COLOR_CYAN}Cleaning Egg Directory:${COLOR_NONE}";
       rm -rf $NEST_DIR/$eggName/* || return 1;
       echo "Done.";
       echo -e "";
-      
+
       echo -e "${COLOR_CYAN}Create Egg:${COLOR_NONE}"
-      nest --nest-path=$NEST_DIR create-egg "$eggName" 'dev' './bin/temp/' || return 1;      
+      nest --nest-path=$NEST_DIR create-egg "$eggName" 'dev' './bin/temp/' || return 1;
       popd > /dev/null;
    fi
 }
@@ -145,7 +149,7 @@ function _dargonBuild_restoreNugetPackages() {
    elif [[ "$PWD" == "/" ]]; then
       echo "WARNING: Reached root directory but did not find NuGet.Config!";
       return 1;
-   else   
+   else
       pushd .. > /dev/null;
       _dargonBuild_restoreNugetPackages;
       local retval=$?;
@@ -158,8 +162,8 @@ function _dargonStart() {
    for command in "$@"; do
       echo "Executing: $command";
       $command || local failed=1;
-      
-      if [[ $failed ]]; then 
+
+      if [[ $failed ]]; then
          echo "";
          echo -e "${COLOR_RED}Startup Failed.${COLOR_NONE}";
          return 1;
