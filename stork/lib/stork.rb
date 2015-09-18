@@ -43,10 +43,14 @@ class Stork
          should_bump_package = yesno "Bump Package?"
 
          if should_bump_package
-            puts "Prev Version: #{package_config["version"]}"
-            version = prompt_semver("New version?")
+            prev_version = SemVer.parse(package_config["version"]);
+            puts "Prev Version: #{prev_version}"
+
+            guess_version = SemVer.new("#{prev_version.major}.#{prev_version.minor}.#{prev_version.patch+1}")
+            new_version = prompt_semver("New version?", guess_version)
+
             package_config["commit"] = git_commit
-            package_config["version"] = version
+            package_config["version"] = new_version
             Config.save_package_config(package_name, package_config)
          end
       end

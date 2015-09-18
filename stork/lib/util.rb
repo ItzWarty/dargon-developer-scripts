@@ -15,10 +15,13 @@ def yesno(prompt = 'Continue?', default = true)
   a == 'y'
 end
 
-def prompt_semver(prompt = 'Version?')
+def prompt_semver(prompt = 'Version?', guess_version = nil)
+   g = "";
+   g = "(#{guess_version.to_s})" if guess_version;
    while true
-      print prompt + ": "
+      print "#{prompt} #{g}: "
       input = STDIN.gets.chomp
+      input = guess_version.to_s if input.size == 0
       semver = SemVer.parse(input)
       return semver if semver.valid?
    end
