@@ -1,14 +1,14 @@
 {
-   "name": "stable",
-   "version": "0.0.5",
-   "packages": {
-      "cored": "0.0.5",
-      "dargon-cli": "0.0.3",
-      "dargon-client": "0.0.2",
-      "nest-host": "0.0.4",
-      "nestd": "0.0.4",
-      "trinket": "0.0.3",
-      "trinket-dim": "0.0.3"
-   },
-   "remote": "https://packages.dargon.io/stable"
+  "name": "stable",
+  "version": "0.0.6",
+  "packages": {
+    "cored": "0.0.6",
+    "dargon-cli": "0.0.4",
+    "dargon-client": "0.0.3",
+    "nest-host": "0.0.5",
+    "nestd": "0.0.5",
+    "trinket": "0.0.4",
+    "trinket-dim": "0.0.4"
+  },
+  "remote": "https://packages.dargon.io/stable"
 }

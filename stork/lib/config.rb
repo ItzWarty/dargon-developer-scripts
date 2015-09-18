@@ -1,9 +1,14 @@
 require 'json'
 
 class Config
-   def self.load_for_release_channel(release_channel)
+   def self.load_release_channel_config(release_channel)
       path = "#{ENV["DARGON_STORK_DEPLOY_CONFIG_DIR"]}/#{release_channel}.json";
       return JSON.parse(IO.read(path));
+   end
+   def self.save_release_channel_config(release_channel, release_config)
+      path = "#{ENV["DARGON_STORK_DEPLOY_CONFIG_DIR"]}/#{release_channel}.json";
+      json = JSON.pretty_generate(release_config);
+      IO.write(path, json);
    end
    def self.load_package_config(package_name)
       path = "#{ENV["DARGON_STORK_DEPLOY_CONFIG_DIR"]}/packages/#{package_name}.json";
