@@ -16,3 +16,4 @@ source "$DARGON_DEVELOPER_SCRIPTS_DIR/dev_dargon.sh";
 source "$DARGON_DEVELOPER_SCRIPTS_DIR/dev_target_nest.sh";
 source "$DARGON_DEVELOPER_SCRIPTS_DIR/dev_target_client.sh";
 source "$DARGON_DEVELOPER_SCRIPTS_DIR/dev_target_platform.sh";
+source "$DARGON_DEVELOPER_SCRIPTS_DIR/dev_stork.sh";
