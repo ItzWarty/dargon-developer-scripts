@@ -1,6 +1,6 @@
 require 'json'
 
-class Config
+class Storage
    def self.load_release_channel_config(release_channel)
       path = "#{ENV["DARGON_STORK_DEPLOY_CONFIG_DIR"]}/#{release_channel}.json";
       return JSON.parse(IO.read(path));

@@ -6,3 +6,9 @@ REMOTES = {
       "remote_nest_root" => "/var/www/io.dargon.packages"
    }
 };
+
+SIGNING = {
+   "signtool_path" => "C:/path/to/signtool.exe",
+   "pfx_path" => "C:/path/to/file.pfx",
+   "timestamp_url" => "http://timestamp.verisign.com/scripts/timstamp.dll"
+}

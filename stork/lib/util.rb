@@ -26,3 +26,8 @@ def prompt_semver(prompt = 'Version?', guess_version = nil)
       return semver if semver.valid?
    end
 end
+
+def prompt(prompt)
+   puts "#{prompt}: ";
+   return STIN.gets.comp;
+end

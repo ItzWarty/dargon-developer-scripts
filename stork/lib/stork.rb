@@ -3,20 +3,20 @@ require 'git'
 require 'net/http'
 require 'net/scp'
 require 'net/ssh'
-require_relative 'config'
+require_relative 'storage'
 require_relative 'util'
-require_relative '../user/remotes'
+require_relative '../user/config'
 
 class Stork
    def prepare_deploy(args)
       release_channel = args[0]
-      release_config = Config.load_release_channel_config(release_channel)
+      release_config = Storage.load_release_channel_config(release_channel)
 
       is_expected_release = release_channel == release_config["name"]
       raise "Expected release channel #{release_channel}!" unless is_expected_release
 
       release_packages = release_config["packages"];
-      package_configs = release_packages.map { |k, v| [k, Config.load_package_config(k)] }.to_h;
+      package_configs = release_packages.map { |k, v| [k, Storage.load_package_config(k)] }.to_h;
 
       package_configs.each do |key, value| validate_unchanged(key, value); end
       updated_packages = (package_configs.select do |key, value|
@@ -44,21 +44,21 @@ class Stork
 
       release_config["version"] = new_version.to_s;
       updated_packages.each do |key, value| release_packages[key] = value["version"]; end
-      Config.save_release_channel_config(release_channel, release_config)
+      Storage.save_release_channel_config(release_channel, release_config)
 
       puts "Saved new release channel configuration."
    end
 
    def validate_unchanged(package_name, package_config)
-      package_repo_path = Config.get_repository_path(package_config["repo"])
+      package_repo_path = Storage.get_repository_path(package_config["repo"])
       git = Git.open(package_repo_path)
       raise "Repository #{package_repo_path} has local changes." if git.diff.any?
    end
 
    def check_package(package_name, package_config = nil)
-      package_config = Config.load_package_config(package_name) unless package_config
+      package_config = Storage.load_package_config(package_name) unless package_config
       package_repo = package_config["repo"];
-      package_repo_path = Config.get_repository_path(package_repo)
+      package_repo_path = Storage.get_repository_path(package_repo)
       package_commit = package_config["commit"];
 
       git = Git.open(package_repo_path)
@@ -82,7 +82,7 @@ class Stork
 
             package_config["commit"] = git_commit
             package_config["version"] = new_version
-            Config.save_package_config(package_name, package_config)
+            Storage.save_package_config(package_name, package_config)
          end
          puts ""
       end
@@ -91,7 +91,7 @@ class Stork
 
    def execute_deploy(args)
       release_channel = args[0]
-      release_config = Config.load_release_channel_config(release_channel)
+      release_config = Storage.load_release_channel_config(release_channel)
       release_packages = release_config["packages"]
       release_version = SemVer.parse(release_config["version"])
       release_remote = release_config["remote"]
@@ -119,7 +119,7 @@ class Stork
       puts "Verified that local version > remote version!"
       puts
 
-      nest_path = Config.get_nest_path();
+      nest_path = Storage.get_nest_path();
       puts "Local nest directory: '#{nest_path}'."
 
       puts "Deploying eggs..."
@@ -144,12 +144,32 @@ class Stork
          raise "Remote egg already exists" if remote_egg_version_req.code != 404
          puts "Successfully validated that remote egg doesn't exist!"
 
+         puts "Running predeploy";
+         package_config = Storage.load_package_config(egg_name);
+         package_predeploy = package_config["predeploy"]
+         package_predeploy.each do |key, value|
+            self.send("predeploy_#{key}", [value, package_config]);
+         end if package_predeploy
+
          # Deploy egg to remote server
          remote_egg_nest_path = "#{remote_nest_root}/#{egg_full_name}";
          puts "Uploading #{egg_path} to #{remote_egg_nest_path}";
-         remote_scp_client.upload!(egg_path, remote_egg_nest_path, :recursive => true);
+         # remote_scp_client.upload!(egg_path, remote_egg_nest_path, :recursive => true);
       end
 
       remote_session.close
+   end
+
+   def predeploy_sign(file_paths, package_config)
+      egg_path = "#{Storage.get_nest_path()}/#{package_config["name"]}"
+      signtool_path = SIGNING["signtool_path"]
+      pfx_path = SIGNING["pfx_path"]
+      timestamp_url = SIGNING["timestamp_url"]
+      SIGNING["password"] = prompt("Code signing pfx password?") unless SIGNING["password"]
+      sign_password = SIGNING["password"];
+
+      file_paths.each do |file_path|
+         sign_result = `#{signtool_path} sign /f #{pfx_path} /t #{timestamp_url} /p #{sign_password} #{egg_path}/#{file_path}`;
+      end
    end
 end

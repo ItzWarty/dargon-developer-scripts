@@ -186,4 +186,4 @@ FakesAssemblies/
 temp/
 
 # Stork user configuration
-stork/user/remotes.rb
+stork/user/config.rb
