@@ -31,3 +31,14 @@ def prompt(prompt)
    puts "#{prompt}: ";
    return STIN.gets.comp;
 end
+
+def assert_equals(a, b, message = nil)
+   raise "Assertion failed! #{a} != #{b} #{message}" if a != b
+end
+
+# via http://chrisholtz.com/blog/lets-make-a-ruby-hash-map-method-that-returns-a-hash-instead-of-an-array/
+class Hash
+   def hmap(&block)
+      Hash[self.map {|k, v| block.call(k,v) }]
+   end
+end

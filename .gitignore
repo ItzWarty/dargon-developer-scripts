@@ -187,3 +187,9 @@ temp/
 
 # Stork user configuration
 stork/user/config.rb
+
+# Stork stage
+stage/
+
+# IntelliJ Stuff
+.idea

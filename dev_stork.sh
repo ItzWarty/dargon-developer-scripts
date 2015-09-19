@@ -1,5 +1,6 @@
 export DARGON_STORK_DIR="$DARGON_DEVELOPER_SCRIPTS_DIR/stork";
 export DARGON_STORK_DEPLOY_CONFIG_DIR="$DARGON_DEVELOPER_SCRIPTS_DIR/deploy";
+export DARGON_STORK_STAGE_DIR="$DARGON_DEVELOPER_SCRIPTS_DIR/stage";
 
 function storkPrepareDeploy() {
    local channel=$1;

@@ -1,6 +1,3 @@
-require_relative "lib/stork"
-command = ARGV[0];
-arguments = ARGV.drop(1);
+require_relative 'lib/dispatcher'
 
-stork = Stork.new();
-stork.send(command, arguments);
+Dispatcher.new().dispatch(ARGV);
