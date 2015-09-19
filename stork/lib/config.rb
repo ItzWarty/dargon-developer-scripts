@@ -22,4 +22,7 @@ class Config
    def self.get_repository_path(repository_name)
       return "#{ENV["DARGON_REPOSITORIES_DIR"]}/#{repository_name}";
    end
+   def self.get_nest_path()
+      return ENV["NEST_DIR"];
+   end
 end

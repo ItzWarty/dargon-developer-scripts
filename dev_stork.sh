@@ -6,4 +6,9 @@ function storkPrepareDeploy() {
    _storkExec prepare_deploy $1;
 }
 
+function storkExecuteDeploy() {
+   local channel=$1;
+   _storkExec execute_deploy $1;
+}
+
 function _storkExec { ruby "$DARGON_STORK_DIR/main.rb" $@; }

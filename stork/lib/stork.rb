@@ -1,6 +1,11 @@
+require 'httparty'
 require 'git'
+require 'net/http'
+require 'net/scp'
+require 'net/ssh'
 require_relative 'config'
 require_relative 'util'
+require_relative '../user/remotes'
 
 class Stork
    def prepare_deploy(args)
@@ -82,5 +87,69 @@ class Stork
          puts ""
       end
       return package_config["version"];
+   end
+
+   def execute_deploy(args)
+      release_channel = args[0]
+      release_config = Config.load_release_channel_config(release_channel)
+      release_packages = release_config["packages"]
+      release_version = SemVer.parse(release_config["version"])
+      release_remote = release_config["remote"]
+
+      remote_config = REMOTES[release_remote];
+      remote_ip = remote_config["remote_ip"]
+      remote_user = remote_config["remote_user"]
+      remote_key = remote_config["remote_key"]
+      remote_nest_root = remote_config["remote_nest_root"]
+
+      remote_session = Net::SSH.start(
+        remote_ip, remote_user,
+        :keys => remote_key);
+
+      remote_scp_client = Net::SCP.new(remote_session);
+
+      # Validate deploying stable version is above remote/stable
+      print "Fetching remote version of #{release_channel}... "
+      remote_channel_url = "#{release_remote}/#{release_channel}"
+      remote_channel_pointer = HTTParty.get(remote_channel_url);
+      remote_channel_version = SemVer.parse(remote_channel_pointer.split("-")[-1]);
+      puts remote_channel_version;
+
+      raise "Local (#{release_version}) <= Remote #{remote_channel_version}!" if release_version <= remote_channel_version;
+      puts "Verified that local version > remote version!"
+      puts
+
+      nest_path = Config.get_nest_path();
+      puts "Local nest directory: '#{nest_path}'."
+
+      puts "Deploying eggs..."
+      release_packages.each do |egg_name, egg_version_string|
+         egg_version_parts = egg_version_string.split("=>");
+         next if egg_version_parts.size == 1
+         previous_egg_version = egg_version_parts[0];
+         egg_version = egg_version_parts[-1];
+         puts egg_name + " #{previous_egg_version} => #{egg_version}"
+         egg_full_name = "#{egg_name}-#{egg_version}"
+
+         # Update egg_path/version
+         egg_path = "#{nest_path}/#{egg_name}";
+         egg_version_path = "#{egg_path}/version"
+         IO.write(egg_version_path, egg_version);
+
+         # Validate that a conflicting remote egg doesn't alraedy exist
+         remote_egg_path = "#{release_remote}/#{egg_full_name}";
+         remote_egg_version_path = "#{remote_egg_path}/version";
+         remote_egg_version_req = HTTParty.get(remote_egg_version_path);
+         puts "Got response code #{remote_egg_version_req.code} when fetching #{remote_egg_version_path}."
+         raise "Remote egg already exists" if remote_egg_version_req.code != 404
+         puts "Successfully validated that remote egg doesn't exist!"
+
+         # Deploy egg to remote server
+         remote_egg_nest_path = "#{remote_nest_root}/#{egg_full_name}";
+         puts "Uploading #{egg_path} to #{remote_egg_nest_path}";
+         remote_scp_client.upload!(egg_path, remote_egg_nest_path, :recursive => true);
+      end
+
+      remote_session.close
    end
 end

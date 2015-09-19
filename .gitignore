@@ -184,3 +184,6 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 temp/
+
+# Stork user configuration
+stork/user/remotes.rb
