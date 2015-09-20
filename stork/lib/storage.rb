@@ -6,6 +6,8 @@ class Storage
       @base = base;
    end
 
+   def base() @base; end
+
    def get(key)
       path = build_path(key)
       return nil unless File.exist?(path)
@@ -21,6 +23,11 @@ class Storage
 
    def clear()
       FileUtils.rm_r @base if File.directory?(@base)
+   end
+
+   def empty_to(other)
+      FileUtils.cp_r "#{@base}/.", other.base
+      clear
    end
 
    def build_path(key)

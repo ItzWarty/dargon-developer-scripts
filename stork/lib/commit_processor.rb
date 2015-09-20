@@ -35,6 +35,9 @@ class CommitProcessor
          scp_client = Net::SCP.new(session)
          updated_packages.each do |package| deploy_to_remote(config, package, scp_client, remote['remote_nest_root']); end
       end
+
+      puts 'Cleanup stage...'
+      @stage.empty_to(@deploy)
    end
 
    def check_remote_conflicts(config, entity)
@@ -57,10 +60,7 @@ class CommitProcessor
       SIGNING['pfx_password'] = prompt_password("Code Signing PFX Password?") unless SIGNING['pfx_password']
 
       puts "Signing #{package.name} files: #{file_paths.join ', '}"
-      signtool = SIGNING['signtool_path']
-      pfx_path = SIGNING['pfx_path']
       pfx_password = SIGNING['pfx_password']
-      timestamp_url = SIGNING['timestamp_url']
       egg_path = "#{Constants.nest_path}/#{package.name}"
 
       file_paths.each do |file_path|
