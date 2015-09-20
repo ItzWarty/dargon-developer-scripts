@@ -1,3 +1,4 @@
+require_relative 'commit_processor'
 require_relative 'constants'
 require_relative 'staging_processor'
 require_relative 'storage'
@@ -15,8 +16,13 @@ class Dispatcher
       send(command, arguments)
    end
 
-   def stage_deploy(args)
+   def stage(args)
       release_channel = args[0]
       StagingProcessor.new(@deploy, @stage).process_channel(release_channel)
+   end
+
+   def commit(args)
+      release_channel = args[0]
+      CommitProcessor.new(@deploy, @stage).process_channel(release_channel)
    end
 end

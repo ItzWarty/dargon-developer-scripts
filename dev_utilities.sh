@@ -29,8 +29,11 @@ function toWindowsPath() {
 function shellExecute() {
    local path=$1;
    local args=${*:2};
+
+   echo $path
+   echo $args
+
+   #local command="$path $args";
    
-   local command="$path $args"; 
-   
-   cmd //c start \"\" $command;
+   cmd //c start \"\" "$path" $args;
 }

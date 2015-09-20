@@ -7,7 +7,9 @@ class Storage
    end
 
    def get(key)
-      OpenStruct.new(JSON.parse(IO.read(build_path(key))))
+      path = build_path(key)
+      return nil unless File.exist?(path)
+      OpenStruct.new(JSON.parse(IO.read(path)))
    end
 
    def put(key, value)
@@ -15,6 +17,10 @@ class Storage
       dirname = File.dirname(path)
       FileUtils.mkdir_p(dirname) unless File.directory?(dirname)
       IO.write(path, JSON.pretty_generate(value.to_h))
+   end
+
+   def clear()
+      FileUtils.rm_r @base if File.directory?(@base)
    end
 
    def build_path(key)

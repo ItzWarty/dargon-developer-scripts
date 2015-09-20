@@ -2,5 +2,8 @@
   "name": "nestd",
   "repo": "Dargon.Nest",
   "version": "0.0.4",
-  "commit": ""
+  "commit": "",
+  "predeploy": {
+    "sign": [ "nestd.exe" ]
+  }
 }

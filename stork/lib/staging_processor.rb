@@ -10,15 +10,16 @@ class StagingProcessor
    end
 
    def process_channel(channel_name)
+      @stage.clear()
+
       config = @deploy.get(channel_name)
       assert_equals(config.name, channel_name)
 
       changed_packages = Set.new
 
-      config.packages.each do |package_name, deployed_version|
+      config.packages.to_h.each do |package_name, deployed_version|
          package = @deploy.get(build_package_path(package_name))
-         changed_packages.add package if process_package_internal(package)
-         changed_packages.add package if package.version != deployed_version
+         changed_packages.add package if process_package_internal(package) || (package.version != deployed_version)
       end
 
       if changed_packages.none?
@@ -34,7 +35,14 @@ class StagingProcessor
          config.packages[package.name] = package.version
       end
 
-      @stage.put(channel_name, config)
+      if yesno("Bump #{channel_name}?")
+         channel_version = SemVer.parse(config.version)
+         suggested_version = SemVer.new("#{channel_version.major}.#{channel_version.minor}.#{channel_version.patch+1}")
+         new_version = prompt_semver("New package version?", suggested_version)
+         config.version = new_version.to_s
+
+         @stage.put(channel_name, config)
+      end
    end
 
    def process_package_internal(package)
@@ -53,6 +61,10 @@ class StagingProcessor
 
       package.commit = current_commit
       package.version = new_version
+
+      egg_path = "#{Constants.nest_path}/#{package.name}"
+      IO.write("#{egg_path}/version", package.version)
+
       true
    end
 

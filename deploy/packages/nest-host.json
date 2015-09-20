@@ -2,5 +2,8 @@
   "name": "nest-host",
   "repo": "Dargon.Nest",
   "version": "0.0.4",
-  "commit": ""
+  "commit": "",
+  "predeploy": {
+    "sign": [ "nest-host.exe" ]
+  }
 }
