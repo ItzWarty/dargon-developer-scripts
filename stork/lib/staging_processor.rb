@@ -41,8 +41,20 @@ class StagingProcessor
          new_version = prompt_semver("New package version?", suggested_version)
          config.version = new_version.to_s
 
+         puts "Generating '#{channel_name}' directory in nest..."
+         egg_dir = "#{Constants.nest_path}/#{channel_name}"
+         Dir.mkdir egg_dir unless File.exists?(egg_dir)
+
+         packages_content = (config.packages.to_h.map do |package_name, package_version|
+            "#{package_name} #{package_version}"
+         end).join("\n")
+
+         IO.write("#{egg_dir}/PACKAGES", packages_content)
+
          @stage.put(channel_name, config)
       end
+
+      puts "Done!"
    end
 
    def process_package_internal(package)

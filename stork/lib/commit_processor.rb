@@ -29,12 +29,18 @@ class CommitProcessor
       updated_packages.each do |package| predeploy(package); end
       puts ""
 
-      puts 'Deploying staged packages to remote...'
+      puts 'Connecting to remote...'
       remote = REMOTES[config.remote]
       Net::SSH.start(remote['remote_ip'], remote['remote_user'], :keys => remote['remote_key']) do |session|
          scp_client = Net::SCP.new(session)
+
+         puts 'Deploying staged packages to remote...'
          updated_packages.each do |package| deploy_to_remote(config, package, scp_client, remote['remote_nest_root']); end
+
+         puts 'Deploying staged release to remote...'
+         deploy_to_remote(config, config, scp_client, remote['remote_nest_root'])
       end
+
 
       puts 'Cleanup stage...'
       @stage.empty_to(@deploy)
