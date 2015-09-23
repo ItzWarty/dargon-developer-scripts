@@ -98,11 +98,15 @@ function _dargonBuildAll() {
 }
 
 function _dargonBuildEgg() {
-   local eggName=$1;
-   local projectDirPath=$2;
-   local projectFileName=$3;
+   local nestName=$1;
+   local eggName=$2;
+   local projectDirPath=$3;
+   local projectFileName=$4;
 
-   if [[ -z "$eggName" ]]; then
+   if [[ -z "$nestName" ]]; then
+      echo "Empty nestName";
+      return 1;
+   elif [[ -z "$eggName" ]]; then
       echo "Empty eggName";
       return 1;
    elif [[ -z "$projectDirPath" ]]; then
@@ -133,12 +137,13 @@ function _dargonBuildEgg() {
       echo -e ""
 
       echo -e "${COLOR_CYAN}Cleaning Egg Directory:${COLOR_NONE}";
-      rm -rf $NEST_DIR/$eggName/* || return 1;
+      mkdir $NEST_ROOT_DIR/$nestName/$eggName -p;
+      rm -rf $NEST_ROOT_DIR/$nestName/$eggName/* || return 1;
       echo "Done.";
       echo -e "";
 
       echo -e "${COLOR_CYAN}Create Egg:${COLOR_NONE}"
-      nest --nest-path=$NEST_DIR create-egg "$eggName" 'dev' './bin/temp/' || return 1;
+      nest --nest-path=$NEST_ROOT_DIR/$nestName create-egg "$eggName" 'dev' './bin/temp/' || return 1;
       popd > /dev/null;
    fi
 }

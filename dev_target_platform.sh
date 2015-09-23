@@ -14,9 +14,9 @@ function _platformStartZilean()  { _platformStartEgg "zileand"; }
 function _platformStartCore()    { _platformStartEgg "platformd"; }
 function _platformStartWebend()  { _platformStartEgg "webendd"; }
 
-function _platformBuildZilean()  { _dargonBuildEgg "zileand" "Dargon.Zilean/zileand" "zileand.csproj"; }
-function _platformBuildCore()    { _dargonBuildEgg "platformd" "Dargon.Hydar/platform" "platform.csproj"; }
-function _platformBuildWebend()  { _dargonBuildEgg "webendd" "Dargon.Hydar/webend" "webend.csproj"; }
+function _platformBuildZilean()  { _dargonBuildEgg "platform"   "zileand" "Dargon.Zilean/zileand" "zileand.csproj"; }
+function _platformBuildCore()    { _dargonBuildEgg "platform"   "platformd" "Dargon.Hydar/platform" "platform.csproj"; }
+function _platformBuildWebend()  { _dargonBuildEgg "platform"   "webendd" "Dargon.Hydar/webend" "webend.csproj"; }
 
 function _platformMigrate {
    __updateNugetEverything;
