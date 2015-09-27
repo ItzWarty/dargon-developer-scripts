@@ -7,11 +7,11 @@ function _nestBuildHost()        { _dargonBuildEgg "nest"   "nest-host"         
 function _nestBuildExampleEgg()  { _dargonBuildEgg "dev"    "dev-egg-example"    "Dargon.Nest/dev-egg-example"    "dev-egg-example.csproj"; }
 function _nestBuildCommander()   { _dargonBuildEgg "dev"    "dev-nest-commander" "Dargon.Nest/dev-nest-commander" "dev-nest-commander.csproj"; }
 
-function _nestStartSpawner()     { ("$NEST_DIR/nest-spawner/nest-spawner.exe"); }
-function _nestStartDaemon()      { shellExecute "$(toWindowsPath $NEST_DIR/nestd/nestd.exe)" $@; }
-function _nestStartEgg()         { "$NEST_DIR/dev-nest-commander/dev-nest-commander.exe" -c spawn-egg $@; }
-function _nestKill()             { "$NEST_DIR/dev-nest-commander/dev-nest-commander.exe" -c kill-nest $@; }
-function _nestStartCli()         { cd $NEST_DIR && "$NEST_DIR/nest/nest.exe"; }
+function _nestStartSpawner()     { ("$NEST_ROOT_DIR/dev/nest-spawner/nest-spawner.exe"); }
+function _nestStartDaemon()      { shellExecute "$(toWindowsPath $NEST_ROOT_DIR/nest/nestd/nestd.exe)" $@; }
+function _nestStartEgg()         { "$NEST_ROOT_DIR/dev/dev-nest-commander/dev-nest-commander.exe" -c spawn-egg $@; }
+function _nestKill()             { "$NEST_ROOT_DIR/dev/dev-nest-commander/dev-nest-commander.exe" -c kill-nest $@; }
+function _nestStartCli()         { cd $NEST_DIR && "$NEST_ROOT_DIR/dev/nest/nest.exe"; }
 
 function _nestTryKill() {
    echo -e "==${COLOR_LIME} TryKill nestd $@ ${COLOR_NONE}=="

@@ -23,3 +23,5 @@ function _clientBuildCli()                   { _dargonBuildEgg "client"     "dar
 function _clientBuildTrinket()               { _dargonBuildEgg "client"     "trinket"               "the-dargon-project/trinket-proxy-impl"      "trinket-proxy-impl.csproj"; }
 function _clientBuildTrinketDim()            { _dargonBuildEgg "client"     "trinket-dim"           "the-dargon-project/DargonInjectedModule"    "Dargon - Injected Module.vcxproj"; }
 function _clientBuildThumbnailGenerator()    { _dargonBuildEgg "client"     "thumbnail-generator"   "the-dargon-project/thumbnail-generator"     "thumbnail-generator.csproj"; }
+
+function dmiClientNestDaemon()   { (dmi "localhost:$CLIENT_NESTD_MANAGEMENT_PORT" &); }
