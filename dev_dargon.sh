@@ -97,6 +97,35 @@ function _dargonBuildAll() {
    fi
 }
 
+function _dargonPrebuildSetupDevelopmentNest() {
+   local nestName=$1;
+   if [[ -z "$nestName" ]]; then
+     echo "Empty nestName";
+     return 1;
+   fi
+
+   echo -e "== ${COLOR_LIME}Setup Nest $nestName${COLOR_NONE} =="
+
+   local packageConfig=`cat $DARGON_DEVELOPER_SCRIPTS_DIR/deploy/$nestName.json`
+   local semver=`echo "$packageConfig" | grep version | cut -d ":" -f 2 | cut -d "\"" -f 2`;
+   local major=`echo $semver | cut -d\. -f1`;
+   local minor=`echo $semver | cut -d\. -f2`;
+   local patchAndPrerelease=`echo $semver | cut -d\. -f3`;
+   local patch=`echo $patchAndPrerelease | cut -d- -f1`;
+   if [[ $patchAndPrerelease == *"-"* ]]; then
+      echo "${COLOR_RED}Warning: Found prerelease in deploy file for $nestName.${COLOR_NONE}";
+      local prerelease=`echo $patchAndPrerelease | cut -d- -f2`;
+   fi
+   local bumpedPatch=$(($patch + 1));
+   local bumpedSemver="$major.$minor.$bumpedPatch-dev";
+
+   echo "Deployed version of $nestName: $semver";
+   echo "Development version of $nestName: $bumpedSemver";
+
+   mkdir "$NEST_ROOT_DIR/$nestName" -p;
+   echo "$bumpedSemver" > "$NEST_ROOT_DIR/$nestName/VERSION";
+}
+
 function _dargonBuildEgg() {
    local nestName=$1;
    local eggName=$2;

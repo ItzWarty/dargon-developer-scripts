@@ -1,0 +1,9 @@
+{
+  "name": "nest",
+  "version": "0.0.0",
+  "remote": "https://packages.dargon.io",
+  "packages": {
+    "nest-host": "0.0.5",
+    "nestd": "0.0.5"
+  }
+}

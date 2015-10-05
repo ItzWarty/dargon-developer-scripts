@@ -3,7 +3,7 @@ CLIENT_NESTD_MANAGEMENT_PORT=21000;
 
 function pushdCore()    { pushd "$DARGON_REPOSITORIES_DIR/the-dargon-project"; }
 
-function clientBuild()           { _clientTryKill; _dargonBuildAll "Dargon Client" _clientBuild; }
+function clientBuild()           { _clientTryKill; _dargonBuildAll "Dargon Client" "client"; }
 function clientStartHeadless()   { _clientTryKill; _dargonStart _clientStartNestD _clientStartCoreD; }
 function clientStartWithGui()    { _clientTryKill; _dargonStart clientStartHeadless _clientStartManager; }
 function clientStartWithCli()    { _clientTryKill; _dargonStart clientStartHeadless _clientStartCli; }
@@ -17,6 +17,7 @@ function _clientStartManager()   { _clientStartEgg "dargon-client"; }
 function _clientStartThumbGen()  { _clientStartEgg "thumbnail-generator"; }
 function _clientStartCli()       { eval "$NEST_DIR/dargon-cli/dargon-cli.exe"; }
 
+function _clientPrebuild() { _dargonSetupDevelopmentNest "client"; }
 function _clientBuildCoreDaemon()            { _dargonBuildEgg "client"     "cored"                 "the-dargon-project/daemon-impl"             "daemon-impl.csproj"; }
 function _clientBuildClient()                { _dargonBuildEgg "client"     "dargon-client"         "the-dargon-project/dargon-client"           "dargon-client.csproj"; }
 function _clientBuildCli()                   { _dargonBuildEgg "client"     "dargon-cli"            "the-dargon-project/dargon-cli"              "dargon-cli.csproj"; }
