@@ -21,8 +21,27 @@ class Storage
       IO.write(path, JSON.pretty_generate(value.to_h))
    end
 
+   def remove(key)
+      path = build_path(key)
+      FileUtils.rm(path) if File.exist?(path)
+   end
+
    def clear()
-      FileUtils.rm_r @base if File.directory?(@base)
+      clear_directory(@base)
+   end
+
+   def clear_directory(dir_path)
+      Dir.foreach(dir_path) do |path|
+         next if path == '.' || path == '..'
+
+         full_path = File.join(dir_path, path);
+         if File.directory?(full_path)
+            clear_directory(full_path)
+            FileUtils.remove_dir(full_path)
+         else
+            File.delete(full_path)
+         end
+      end
    end
 
    def empty_to(other)

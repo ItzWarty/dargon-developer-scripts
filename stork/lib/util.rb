@@ -29,6 +29,10 @@ def assert_equals(a, b, message = nil)
    raise "Assertion failed! #{a} != #{b} #{message}" if a != b
 end
 
+def bump_patch(semver)
+   SemVer.new("#{semver.major}.#{semver.minor}.#{semver.patch+1}")
+end
+
 # via http://chrisholtz.com/blog/lets-make-a-ruby-hash-map-method-that-returns-a-hash-instead-of-an-array/
 class Hash
    def hmap(&block)
