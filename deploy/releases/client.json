@@ -1,0 +1,10 @@
+{
+  "name": "client",
+  "version": "0.0.7",
+  "bundles": {
+    "nest": "0.0.0",
+    "client-core": "0.0.0",
+    "client-manager": "0.0.0"
+  },
+  "remote": "https://packages.dargon.io"
+}
