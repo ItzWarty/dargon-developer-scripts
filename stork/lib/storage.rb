@@ -27,7 +27,7 @@ class Storage
    end
 
    def clear()
-      clear_directory(@base)
+      clear_directory(@base) if File.directory?(@base)
    end
 
    def clear_directory(dir_path)
