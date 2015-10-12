@@ -14,7 +14,7 @@ class ChannelOperations
       raise "Unknown release/channel specified." unless channel_config
 
       old_version = SemVer.parse(channel_config.version)
-      if (old_version > version)
+      if old_version > version
          return unless yesno("Attempted to bump #{release}/#{channel} to version #{version} but deployed version is greater: #{old_version}. Continue?")
       end
 

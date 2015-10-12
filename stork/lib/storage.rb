@@ -1,5 +1,6 @@
 require 'fileutils'
 require 'ostruct'
+require 'pathname'
 
 class Storage
    def initialize(base)
@@ -44,6 +45,13 @@ class Storage
       end
    end
 
+   def enumerate_keys(query = nil)
+      start_path = @base
+      start_path = "#{start_path}/#{query}" if query
+
+      Dir.glob("#{start_path}/**/*").reject { |d| File.directory?(d) }.map(&method(:unbuild_path))
+   end
+
    def empty_to(other)
       FileUtils.cp_r "#{@base}/.", other.base
       clear
@@ -51,5 +59,9 @@ class Storage
 
    def build_path(key)
       "#{@base}/#{key}.json"
+   end
+
+   def unbuild_path(built_path)
+      Pathname.new(built_path).relative_path_from(Pathname.new(@base)).to_s[0...-5]
    end
 end

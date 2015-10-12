@@ -54,16 +54,35 @@ class Dispatcher
       release_and_channel = args[0]
       release = release_and_channel.split("/")[0]
       channel = release_and_channel.split("/")[1]
-      raise "First argument should be of format release/channel" if "#{release}/#{channel}" != release_and_channel
+      raise 'First argument should be of format release/channel' if "#{release}/#{channel}" != release_and_channel
 
       version = SemVer.parse(args[1])
-      raise "Second argument should be a semantic version" unless version.valid?
+      raise 'Second argument should be a semantic version' unless version.valid?
 
       @channel_operations.try_bump(release, channel, version);
    end
 
    def commit(args)
-      release_channel = args[0]
-      CommitProcessor.new(@deploy, @stage).process_channel(release_channel)
+      what = args[0]
+      send("commit_#{what}", args.drop(1))
+   end
+
+   def commit_all(args)
+      @stage.enumerate_keys('packages').each {|key| commit_package([key.split('/').last] + args)}
+      @stage.enumerate_keys('bundles').each {|key| commit_bundle([key.split('/').last] + args)}
+      @stage.enumerate_keys('releases').each {|key| commit_release([key.split('/').last] + args)}
+   end
+
+   def commit_package(args)
+      package_name = args[0]
+      @package_operations.try_commit(package_name)
+   end
+
+   def commit_bundle(args)
+      puts "Committing bundle #{args[0]}"
+   end
+
+   def commit_release(args)
+      puts "Committing release #{args[0]}"
    end
 end
